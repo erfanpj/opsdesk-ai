@@ -70,10 +70,22 @@ def test_every_scenario_yields_valid_proposal(bl):
         assert check_proposal(prop, bl.catalog, bl.passages) == [], s.ticket.ticket_id
 
 
-def test_scenario_file_matches_frozen_hash():
+def test_scenario_files_match_frozen_hashes():
     import hashlib
-    expected = (DATA_DIR / "tickets" / "SHA256SUMS").read_text().split()[0]
-    assert hashlib.sha256((DATA_DIR / "tickets" / "scenarios_v1.jsonl").read_bytes()).hexdigest() == expected
+    lines = (DATA_DIR / "tickets" / "SHA256SUMS").read_text().splitlines()
+    assert len(lines) == 2
+    for line in lines:
+        digest, rel = line.split()
+        assert hashlib.sha256((DATA_DIR.parent / rel).read_bytes()).hexdigest() == digest, rel
+
+
+def test_heldout_v2_is_separate_from_v1():
+    v1 = [Scenario.model_validate_json(l) for l in (DATA_DIR / "tickets" / "scenarios_v1.jsonl").read_text().splitlines()]
+    v2 = [Scenario.model_validate_json(l) for l in (DATA_DIR / "tickets" / "scenarios_v2_heldout.jsonl").read_text().splitlines()]
+    assert len(v2) >= 50 and {s.split for s in v2} == {"test"}
+    assert not {s.family for s in v1} & {s.family for s in v2}
+    assert not {s.ticket.ticket_id for s in v1} & {s.ticket.ticket_id for s in v2}
+    assert not {s.ticket.body for s in v1} & {s.ticket.body for s in v2}
 
 
 def test_families_do_not_cross_splits():
