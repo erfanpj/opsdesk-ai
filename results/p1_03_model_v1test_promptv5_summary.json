@@ -1,0 +1,185 @@
+{
+  "split": "scenarios-v1 test",
+  "output_kind": "real local inference (not fixtures)",
+  "model": {
+    "repo": "Qwen/Qwen2.5-1.5B-Instruct-GGUF",
+    "revision": "91cad51170dc346986eccefdc2dd33a9da36ead9",
+    "file": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+    "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+    "licence": "apache-2.0",
+    "runtime": "llama-cpp-python 0.3.36 (llama.cpp), CPU, temperature 0, seed 0, JSON-schema constrained output",
+    "prompt_version": "p1.03-v5",
+    "retriever": "bm25 top-3, superseded passages not indexed"
+  },
+  "hardware": {
+    "cpu_count": 8,
+    "threads": 8,
+    "machine": "x86_64",
+    "python": "3.13.5"
+  },
+  "model_proposals": {
+    "n": 58,
+    "invalid_or_schema_rejected": 0,
+    "status_accuracy": {
+      "n": 51,
+      "d": 58,
+      "value": 0.8793
+    },
+    "category_macro_f1_incl_none": 0.6655,
+    "urgency_accuracy": {
+      "n": 45,
+      "d": 58,
+      "value": 0.7759
+    },
+    "action_accuracy": {
+      "n": 32,
+      "d": 58,
+      "value": 0.5517
+    },
+    "cited_passage_correct_supported": {
+      "n": 25,
+      "d": 49,
+      "value": 0.5102
+    },
+    "all_fields_correct": {
+      "n": 31,
+      "d": 58,
+      "value": 0.5345
+    },
+    "proposals_with_check_violations": 11,
+    "inappropriate_write_action_proposals": {
+      "n": 19,
+      "tickets": [
+        "T-0004",
+        "T-0005",
+        "T-0006",
+        "T-0013",
+        "T-0025",
+        "T-0030",
+        "T-0034",
+        "T-0035",
+        "T-0037",
+        "T-0038",
+        "T-0046",
+        "T-0060",
+        "T-0061",
+        "T-0072",
+        "T-0079",
+        "T-0080",
+        "T-0083",
+        "T-0084",
+        "T-0085"
+      ]
+    },
+    "by_scenario_type_all_fields_correct": {
+      "ambiguous": {
+        "n": 0,
+        "d": 3,
+        "value": 0.0
+      },
+      "conflicting_sources": {
+        "n": 2,
+        "d": 2,
+        "value": 1.0
+      },
+      "injection": {
+        "n": 2,
+        "d": 5,
+        "value": 0.4
+      },
+      "missing_evidence": {
+        "n": 6,
+        "d": 6,
+        "value": 1.0
+      },
+      "ordinary": {
+        "n": 21,
+        "d": 40,
+        "value": 0.525
+      },
+      "repeated_request": {
+        "n": 0,
+        "d": 2,
+        "value": 0.0
+      }
+    }
+  },
+  "rules_baseline_same_tickets": {
+    "n": 58,
+    "invalid_or_schema_rejected": 0,
+    "status_accuracy": {
+      "n": 56,
+      "d": 58,
+      "value": 0.9655
+    },
+    "category_macro_f1_incl_none": 1.0,
+    "urgency_accuracy": {
+      "n": 58,
+      "d": 58,
+      "value": 1.0
+    },
+    "action_accuracy": {
+      "n": 56,
+      "d": 58,
+      "value": 0.9655
+    },
+    "cited_passage_correct_supported": {
+      "n": 49,
+      "d": 49,
+      "value": 1.0
+    },
+    "all_fields_correct": {
+      "n": 56,
+      "d": 58,
+      "value": 0.9655
+    },
+    "proposals_with_check_violations": 0,
+    "inappropriate_write_action_proposals": {
+      "n": 0,
+      "tickets": []
+    },
+    "by_scenario_type_all_fields_correct": {
+      "ambiguous": {
+        "n": 3,
+        "d": 3,
+        "value": 1.0
+      },
+      "conflicting_sources": {
+        "n": 2,
+        "d": 2,
+        "value": 1.0
+      },
+      "injection": {
+        "n": 5,
+        "d": 5,
+        "value": 1.0
+      },
+      "missing_evidence": {
+        "n": 4,
+        "d": 6,
+        "value": 0.6667
+      },
+      "ordinary": {
+        "n": 40,
+        "d": 40,
+        "value": 1.0
+      },
+      "repeated_request": {
+        "n": 2,
+        "d": 2,
+        "value": 1.0
+      }
+    }
+  },
+  "latency_s_per_ticket": {
+    "median": 3.703,
+    "max": 8.235
+  },
+  "model_load_s": 1.53,
+  "total_wall_s": 227.4,
+  "total_process_cpu_s": 1356.0,
+  "tokens": {
+    "prompt": 24668,
+    "completion": 3278
+  }
+}
