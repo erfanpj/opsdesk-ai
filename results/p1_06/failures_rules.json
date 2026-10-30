@@ -1,0 +1,483 @@
+[
+  {
+    "ticket": "T-0104",
+    "family": "F39",
+    "type": "ordinary",
+    "subject": "Account frozen",
+    "body": "After a few wrong tries the site froze my account and says to wait or contact support. Postcode is 50667.",
+    "expected": [
+      "proposed",
+      "unlock_account",
+      [
+        "HB-ACC-02"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0106",
+    "family": "F40",
+    "type": "ordinary",
+    "subject": "Not my purchase",
+    "body": "I just saw a confirmation for two batteries shipped to an address in another city. I never bought those. Someone is in my account.",
+    "expected": [
+      "proposed",
+      "escalate_to_human",
+      [
+        "HB-ACC-03"
+      ]
+    ],
+    "got": [
+      "needs_clarification",
+      "request_clarification",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0108",
+    "family": "F40",
+    "type": "ordinary",
+    "subject": "Strange activity",
+    "body": "There are sign-ins from a device I don't own and an order I didn't place.",
+    "expected": [
+      "proposed",
+      "escalate_to_human",
+      [
+        "HB-ACC-03"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0110",
+    "family": "F41",
+    "type": "ordinary",
+    "subject": "Receipt",
+    "body": "Lost the receipt for the lock I bought, can I get it again?",
+    "expected": [
+      "proposed",
+      "resend_invoice",
+      [
+        "HB-BIL-02"
+      ]
+    ],
+    "got": [
+      "proposed",
+      "escalate_to_human",
+      [
+        "HB-ORD-02"
+      ]
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0111",
+    "family": "F42",
+    "type": "ordinary",
+    "subject": "Two payments",
+    "body": "My bank shows two payments of 54 EUR for one order. Please give one back.",
+    "expected": [
+      "proposed",
+      "issue_refund",
+      [
+        "HB-BIL-03"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0118",
+    "family": "F45",
+    "type": "ordinary",
+    "subject": "Any news?",
+    "body": "Ordered a helmet on Thursday. Any idea when it gets here?",
+    "expected": [
+      "proposed",
+      "send_tracking_update",
+      [
+        "HB-ORD-01"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0119",
+    "family": "F45",
+    "type": "ordinary",
+    "subject": "Package",
+    "body": "Is my package on the way? Haven't heard anything since I paid.",
+    "expected": [
+      "proposed",
+      "send_tracking_update",
+      [
+        "HB-ORD-01"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0120",
+    "family": "F45",
+    "type": "ordinary",
+    "subject": "ETA",
+    "body": "Can you tell me where my parcel is right now?",
+    "expected": [
+      "proposed",
+      "send_tracking_update",
+      [
+        "HB-ORD-01"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0121",
+    "family": "F46",
+    "type": "ordinary",
+    "subject": "Says delivered, isn't",
+    "body": "App says it was delivered at 14:02 but there's nothing at my door or with the neighbours.",
+    "expected": [
+      "proposed",
+      "escalate_to_human",
+      [
+        "HB-ORD-02"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0122",
+    "family": "F46",
+    "type": "ordinary",
+    "subject": "missing parcel",
+    "body": "The courier claims the box was handed over. I never got it.",
+    "expected": [
+      "proposed",
+      "escalate_to_human",
+      [
+        "HB-ORD-02"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0123",
+    "family": "F47",
+    "type": "ordinary",
+    "subject": "Box was smashed",
+    "body": "The box was smashed and the rear light inside is cracked.",
+    "expected": [
+      "proposed",
+      "request_damage_photos",
+      [
+        "HB-DMG-01"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0125",
+    "family": "F47",
+    "type": "ordinary",
+    "subject": "Delivery issue",
+    "body": "My saddle arrived with a big tear in it, looks like it happened in transport.",
+    "expected": [
+      "proposed",
+      "request_damage_photos",
+      [
+        "HB-DMG-01"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0126",
+    "family": "F48",
+    "type": "ordinary",
+    "subject": "Pictures",
+    "body": "Attached are the pictures you asked for of the crushed box and the broken mirror.",
+    "expected": [
+      "proposed",
+      "create_replacement_order",
+      [
+        "HB-DMG-02"
+      ]
+    ],
+    "got": [
+      "proposed",
+      "request_damage_photos",
+      [
+        "HB-DMG-01"
+      ]
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0128",
+    "family": "F49",
+    "type": "ordinary",
+    "subject": "Battery dies fast",
+    "body": "My e-bike battery used to last 60 km, after 10 months it barely does 15 km.",
+    "expected": [
+      "proposed",
+      "create_warranty_case",
+      [
+        "HB-DEF-01"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0129",
+    "family": "F49",
+    "type": "ordinary",
+    "subject": "Spokes breaking",
+    "body": "Three spokes on the rear wheel broke within half a year of normal riding.",
+    "expected": [
+      "proposed",
+      "create_warranty_case",
+      [
+        "HB-DEF-01"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0132",
+    "family": "F50",
+    "type": "ordinary",
+    "subject": "Cheaper plan",
+    "body": "I'd like to move to Basic, don't need the extras of Plus anymore.",
+    "expected": [
+      "proposed",
+      "change_plan",
+      [
+        "HB-SUB-01"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0133",
+    "family": "F51",
+    "type": "ordinary",
+    "subject": "End my care plan",
+    "body": "I sold my bike so please end the care subscription.",
+    "expected": [
+      "proposed",
+      "cancel_subscription",
+      [
+        "HB-SUB-02"
+      ]
+    ],
+    "got": [
+      "needs_clarification",
+      "request_clarification",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0136",
+    "family": "F52",
+    "type": "ordinary",
+    "subject": "What do you store?",
+    "body": "I want to see all the personal information you keep about me, please send a copy.",
+    "expected": [
+      "proposed",
+      "open_privacy_request",
+      [
+        "HB-PRV-01"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0138",
+    "family": "F53",
+    "type": "ordinary",
+    "subject": "Payment page error",
+    "body": "Every time I click pay I get an error page and the order doesn't go through.",
+    "expected": [
+      "proposed",
+      "link_to_incident",
+      [
+        "HB-OUT-01"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0139",
+    "family": "F53",
+    "type": "ordinary",
+    "subject": "can't buy anything",
+    "body": "Your shop is broken, I can't buy anything, the checkout just spins.",
+    "expected": [
+      "proposed",
+      "link_to_incident",
+      [
+        "HB-OUT-01"
+      ]
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0142",
+    "family": "F54",
+    "type": "missing_evidence",
+    "subject": "Student discount",
+    "body": "Is there a student discount for bikes?",
+    "expected": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "got": [
+      "needs_clarification",
+      "request_clarification",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0146",
+    "family": "F55",
+    "type": "missing_evidence",
+    "subject": "Insurance",
+    "body": "Do you sell theft insurance for e-bikes?",
+    "expected": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "got": [
+      "needs_clarification",
+      "request_clarification",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  },
+  {
+    "ticket": "T-0149",
+    "family": "F56",
+    "type": "ambiguous",
+    "subject": "re: my order",
+    "body": "Regarding the thing from before, any update?",
+    "expected": [
+      "needs_clarification",
+      "request_clarification",
+      []
+    ],
+    "got": [
+      "unsupported",
+      "escalate_to_human",
+      []
+    ],
+    "check_problems": [],
+    "error": null
+  }
+]
