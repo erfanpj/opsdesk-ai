@@ -1,0 +1,141 @@
+{
+  "action_accuracy": {
+    "d": 29,
+    "n": 29,
+    "value": 1.0
+  },
+  "all_fields_correct": {
+    "d": 29,
+    "n": 29,
+    "value": 1.0
+  },
+  "by_scenario_type": {
+    "ambiguous": {
+      "all_fields_correct": {
+        "d": 2,
+        "n": 2,
+        "value": 1.0
+      },
+      "n": 2
+    },
+    "conflicting_sources": {
+      "all_fields_correct": {
+        "d": 1,
+        "n": 1,
+        "value": 1.0
+      },
+      "n": 1
+    },
+    "injection": {
+      "all_fields_correct": {
+        "d": 1,
+        "n": 1,
+        "value": 1.0
+      },
+      "n": 1
+    },
+    "missing_evidence": {
+      "all_fields_correct": {
+        "d": 2,
+        "n": 2,
+        "value": 1.0
+      },
+      "n": 2
+    },
+    "ordinary": {
+      "all_fields_correct": {
+        "d": 21,
+        "n": 21,
+        "value": 1.0
+      },
+      "n": 21
+    },
+    "repeated_request": {
+      "all_fields_correct": {
+        "d": 2,
+        "n": 2,
+        "value": 1.0
+      },
+      "n": 2
+    }
+  },
+  "category_accuracy_incl_none": {
+    "d": 29,
+    "n": 29,
+    "value": 1.0
+  },
+  "category_f1": {
+    "None": 1.0,
+    "account_access": 1.0,
+    "billing": 1.0,
+    "order_status": 1.0,
+    "privacy_request": 1.0,
+    "product_defect": 1.0,
+    "service_outage": 1.0,
+    "shipping_damage": 1.0,
+    "subscription": 1.0
+  },
+  "category_macro_f1_incl_none": 1.0,
+  "check_proposal_violations": 0,
+  "cited_passage_correct_supported": {
+    "d": 25,
+    "n": 25,
+    "value": 1.0
+  },
+  "dataset": "scenarios-v1",
+  "dataset_sha256": "63a247405767b34d520b20a4f7d8dcf38f63b054f7f6af4ceb3976faa69642a4",
+  "errors": [],
+  "latency_ms": {
+    "max": 0.484,
+    "median": 0.191
+  },
+  "n_families": 15,
+  "n_scenarios": 29,
+  "passage_hit_at_1_supported": {
+    "d": 25,
+    "n": 24,
+    "value": 0.96
+  },
+  "passage_recall_at_3_supported": {
+    "d": 25,
+    "n": 25,
+    "value": 1.0
+  },
+  "python": "3.13.5",
+  "split": "dev",
+  "status_accuracy": {
+    "d": 29,
+    "n": 29,
+    "value": 1.0
+  },
+  "status_needs_clarification": {
+    "precision": {
+      "d": 2,
+      "n": 2,
+      "value": 1.0
+    },
+    "recall": {
+      "d": 2,
+      "n": 2,
+      "value": 1.0
+    }
+  },
+  "status_unsupported": {
+    "precision": {
+      "d": 2,
+      "n": 2,
+      "value": 1.0
+    },
+    "recall": {
+      "d": 2,
+      "n": 2,
+      "value": 1.0
+    }
+  },
+  "superseded_citations": 0,
+  "urgency_accuracy": {
+    "d": 29,
+    "n": 29,
+    "value": 1.0
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "action_accuracy": {
+    "d": 58,
+    "n": 56,
+    "value": 0.9655
+  },
+  "all_fields_correct": {
+    "d": 58,
+    "n": 56,
+    "value": 0.9655
+  },
+  "by_scenario_type": {
+    "ambiguous": {
+      "all_fields_correct": {
+        "d": 3,
+        "n": 3,
+        "value": 1.0
+      },
+      "n": 3
+    },
+    "conflicting_sources": {
+      "all_fields_correct": {
+        "d": 2,
+        "n": 2,
+        "value": 1.0
+      },
+      "n": 2
+    },
+    "injection": {
+      "all_fields_correct": {
+        "d": 5,
+        "n": 5,
+        "value": 1.0
+      },
+      "n": 5
+    },
+    "missing_evidence": {
+      "all_fields_correct": {
+        "d": 6,
+        "n": 4,
+        "value": 0.6667
+      },
+      "n": 6
+    },
+    "ordinary": {
+      "all_fields_correct": {
+        "d": 40,
+        "n": 40,
+        "value": 1.0
+      },
+      "n": 40
+    },
+    "repeated_request": {
+      "all_fields_correct": {
+        "d": 2,
+        "n": 2,
+        "value": 1.0
+      },
+      "n": 2
+    }
+  },
+  "category_accuracy_incl_none": {
+    "d": 58,
+    "n": 58,
+    "value": 1.0
+  },
+  "category_f1": {
+    "None": 1.0,
+    "account_access": 1.0,
+    "billing": 1.0,
+    "order_status": 1.0,
+    "privacy_request": 1.0,
+    "product_defect": 1.0,
+    "service_outage": 1.0,
+    "shipping_damage": 1.0,
+    "subscription": 1.0
+  },
+  "category_macro_f1_incl_none": 1.0,
+  "check_proposal_violations": 0,
+  "cited_passage_correct_supported": {
+    "d": 49,
+    "n": 49,
+    "value": 1.0
+  },
+  "dataset": "scenarios-v1",
+  "dataset_sha256": "63a247405767b34d520b20a4f7d8dcf38f63b054f7f6af4ceb3976faa69642a4",
+  "errors": [
+    {
+      "expected": [
+        "unsupported",
+        null,
+        "normal",
+        [],
+        "escalate_to_human"
+      ],
+      "family": "F26",
+      "got": [
+        "needs_clarification",
+        null,
+        "normal",
+        [],
+        "request_clarification"
+      ],
+      "ticket": "T-0064",
+      "top3": [
+        "HB-BIL-04",
+        "HB-DEF-01",
+        "HB-SUB-01"
+      ],
+      "type": "missing_evidence"
+    },
+    {
+      "expected": [
+        "unsupported",
+        null,
+        "normal",
+        [],
+        "escalate_to_human"
+      ],
+      "family": "F27",
+      "got": [
+        "needs_clarification",
+        null,
+        "normal",
+        [],
+        "request_clarification"
+      ],
+      "ticket": "T-0069",
+      "top3": [
+        "HB-BIL-04",
+        "HB-DEF-01",
+        "HB-SUB-01"
+      ],
+      "type": "missing_evidence"
+    }
+  ],
+  "latency_ms": {
+    "max": 0.339,
+    "median": 0.192
+  },
+  "n_families": 22,
+  "n_scenarios": 58,
+  "passage_hit_at_1_supported": {
+    "d": 49,
+    "n": 48,
+    "value": 0.9796
+  },
+  "passage_recall_at_3_supported": {
+    "d": 49,
+    "n": 49,
+    "value": 1.0
+  },
+  "python": "3.13.5",
+  "split": "test",
+  "status_accuracy": {
+    "d": 58,
+    "n": 56,
+    "value": 0.9655
+  },
+  "status_needs_clarification": {
+    "precision": {
+      "d": 5,
+      "n": 3,
+      "value": 0.6
+    },
+    "recall": {
+      "d": 3,
+      "n": 3,
+      "value": 1.0
+    }
+  },
+  "status_unsupported": {
+    "precision": {
+      "d": 4,
+      "n": 4,
+      "value": 1.0
+    },
+    "recall": {
+      "d": 6,
+      "n": 4,
+      "value": 0.6667
+    }
+  },
+  "superseded_citations": 0,
+  "urgency_accuracy": {
+    "d": 58,
+    "n": 58,
+    "value": 1.0
+  }
+}

@@ -5,8 +5,11 @@ a whole family sits in either the dev or the test split so near-duplicates never
 The scenarios were written and frozen before the rules baseline was implemented.
 """
 import json
+import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from opsdesk.schemas import Scenario, Ticket
 
