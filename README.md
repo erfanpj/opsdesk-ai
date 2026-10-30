@@ -15,6 +15,7 @@ tickets were written for this demo. Any resemblance to a real company or person 
 | Data and rules baseline (P1.02) | Fictional handbook (17 passages), 87 labelled synthetic tickets, deterministic rules baseline, evaluation script | done, 10 more tests |
 | Retrieval comparison and local-model proposals (P1.03) | Keyword vs BM25 vs dense vs hybrid retrieval; structured proposals from a small local model on CPU, compared with the rules baseline | model-free part and first model runs done; see below |
 | Review, permissions and mock actions (P1.04) | Reviewer roles, explicit human approval, scope checks, idempotent mock execution, hash-chained audit log in SQLite (`opsdesk/desk.py`) | done, 14 more tests |
+| Review screen, JSON API and MCP adapter (P1.05) | Local FastAPI review screen (`opsdesk/app.py`) and an MCP server (`opsdesk/mcp_adapter.py`), both going through the same desk | done, 12 more tests |
 | New held-out set for the final evaluation | `data/tickets/scenarios_v2_heldout.jsonl`, 60 tickets in 25 new families, hashed and committed before use | frozen, not evaluated yet |
 
 The model is a small open-weights model that runs locally on the CPU. There is no paid API, and model output is a draft that a person must approve.
@@ -195,6 +196,25 @@ The scripted reviewer knows the right answer, so these numbers show that the gat
 catch every wrong proposal. With a careless reviewer, an approved wrong proposal would run (within its scope and limits). In one case the desk refused
 a correct-looking model proposal because the refund amount was missing.
 
+## Review screen and MCP adapter (P1.05)
+
+`python -m opsdesk.app` starts a local review screen at http://127.0.0.1:8765. It only listens on 127.0.0.1, and other
+Host headers are refused. For each fictional ticket it shows the text (marked as untrusted), the three retrieved handbook passages with version and
+score, and each proposal with its action, parameters, verbatim citation, any problems and its state. A reviewer can
+approve, reject (a reason is required), edit the parameters (which creates a new draft), run an approved mock action, and read the
+hash-checked audit log. The same operations exist as a JSON API under `/api/`. There is **no login**. The reviewer is picked from
+three fictional demo reviewers, which is fine for a local demo and is not access control.
+
+`python -m opsdesk.mcp_adapter --db opsdesk.sqlite` serves the same desk over MCP (stdio). Its tools are `list_tickets`,
+`get_ticket`, `draft_proposal`, `get_proposal` and `execute_approved_action`. It has **no tool to approve, reject or
+edit**. An assistant connected over MCP can draft, but only a reviewer on the screen can decide, and execution goes through
+`Desk.execute`, so role, scope, version and run-once checks still apply. The tests cover:
+unapproved, guessed and rejected approval ids are refused and the mock is never called; an unknown `approve_proposal`
+tool call fails; after a human approval the action runs once and the replay is ignored; and the same holds over a real stdio subprocess
+that shares the SQLite file with the review side.
+
+Screenshots of the review screen with fictional data are kept with the project's private evidence, not in this repository.
+
 ## Running it
 
 ```bash
@@ -204,6 +224,7 @@ python -m pytest -q tests
 python scripts/build_scenarios.py        # rebuilds the scenario file; the hash must match SHA256SUMS
 python -m opsdesk.evaluate --split test
 python scripts/behaviour_check.py      # P1.04 gate check on saved proposals
+python -m opsdesk.app                 # review screen on http://127.0.0.1:8765 (local only)
 
 # P1.03 extras (CPU only): see requirements-local-models.txt for the torch and llama-cpp indexes
 python -m opsdesk.compare_retrieval --split dev

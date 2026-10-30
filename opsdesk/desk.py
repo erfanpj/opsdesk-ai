@@ -79,7 +79,7 @@ GENESIS = "0" * 64
 class Desk:
     def __init__(self, db_path: str | Path = ":memory:", backend: MockBackend | None = None,
                  reviewers: list[Reviewer] = (), clock: Callable[[], datetime] | None = None):
-        self.db = sqlite3.connect(str(db_path), isolation_level=None)
+        self.db = sqlite3.connect(str(db_path), isolation_level=None, check_same_thread=False)
         self.db.executescript(SCHEMA)
         self.catalog, self.permissions = load_catalog(), load_permissions()
         if self.permissions["catalog_version"] != self.catalog["catalog_version"]:
@@ -250,3 +250,20 @@ class Desk:
 
     def state(self, proposal_id: str) -> str | None:
         return self._proposal(proposal_id)[1]
+
+    # ---- read helpers for the review screen and adapters (no side effects) ------------------
+    def get_proposal(self, proposal_id: str) -> dict | None:
+        p, state, problems = self._proposal(proposal_id)
+        if p is None:
+            return None
+        approvals = [Approval.model_validate_json(r[0]) for r in
+                     self.db.execute("SELECT json FROM approvals WHERE proposal_id=? ORDER BY rowid", (proposal_id,))]
+        execs = [ExecutionEvent.model_validate_json(r[0]) for r in self.db.execute(
+            "SELECT e.json FROM executions e JOIN approvals a ON a.approval_id = e.idempotency_key WHERE a.proposal_id=? ORDER BY e.rowid",
+            (proposal_id,))]
+        return {"proposal": p, "state": state, "problems": problems, "content_hash": p.content_hash(),
+                "approvals": approvals, "executions": execs}
+
+    def proposals_for(self, ticket_id: str) -> list[dict]:
+        ids = [r[0] for r in self.db.execute("SELECT proposal_id FROM proposals WHERE ticket_id=? ORDER BY rowid", (ticket_id,))]
+        return [self.get_proposal(i) for i in ids]
