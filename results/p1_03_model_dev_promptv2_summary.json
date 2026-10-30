@@ -1,0 +1,165 @@
+{
+  "split": "scenarios-v1 dev",
+  "output_kind": "real local inference (not fixtures)",
+  "model": {
+    "repo": "Qwen/Qwen2.5-1.5B-Instruct-GGUF",
+    "revision": "91cad51170dc346986eccefdc2dd33a9da36ead9",
+    "file": "qwen2.5-1.5b-instruct-q4_k_m.gguf",
+    "sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+    "licence": "apache-2.0",
+    "runtime": "llama-cpp-python 0.3.36 (llama.cpp), CPU, temperature 0, seed 0, JSON-schema constrained output",
+    "prompt_version": "p1.03-v2",
+    "retriever": "bm25 top-3, superseded passages not indexed"
+  },
+  "hardware": {
+    "cpu_count": 8,
+    "threads": 8,
+    "machine": "x86_64",
+    "python": "3.13.5"
+  },
+  "model_proposals": {
+    "n": 29,
+    "invalid_or_schema_rejected": 16,
+    "status_accuracy": {
+      "n": 7,
+      "d": 29,
+      "value": 0.2414
+    },
+    "category_macro_f1_incl_none": 0.3063,
+    "urgency_accuracy": {
+      "n": 5,
+      "d": 29,
+      "value": 0.1724
+    },
+    "action_accuracy": {
+      "n": 7,
+      "d": 29,
+      "value": 0.2414
+    },
+    "cited_passage_correct_supported": {
+      "n": 6,
+      "d": 25,
+      "value": 0.24
+    },
+    "all_fields_correct": {
+      "n": 1,
+      "d": 29,
+      "value": 0.0345
+    },
+    "proposals_with_check_violations": 0,
+    "inappropriate_write_action_proposals": {
+      "n": 0,
+      "tickets": []
+    },
+    "by_scenario_type_all_fields_correct": {
+      "ambiguous": {
+        "n": 1,
+        "d": 2,
+        "value": 0.5
+      },
+      "conflicting_sources": {
+        "n": 0,
+        "d": 1,
+        "value": 0.0
+      },
+      "injection": {
+        "n": 0,
+        "d": 1,
+        "value": 0.0
+      },
+      "missing_evidence": {
+        "n": 0,
+        "d": 2,
+        "value": 0.0
+      },
+      "ordinary": {
+        "n": 0,
+        "d": 21,
+        "value": 0.0
+      },
+      "repeated_request": {
+        "n": 0,
+        "d": 2,
+        "value": 0.0
+      }
+    }
+  },
+  "rules_baseline_same_tickets": {
+    "n": 29,
+    "invalid_or_schema_rejected": 0,
+    "status_accuracy": {
+      "n": 29,
+      "d": 29,
+      "value": 1.0
+    },
+    "category_macro_f1_incl_none": 1.0,
+    "urgency_accuracy": {
+      "n": 29,
+      "d": 29,
+      "value": 1.0
+    },
+    "action_accuracy": {
+      "n": 29,
+      "d": 29,
+      "value": 1.0
+    },
+    "cited_passage_correct_supported": {
+      "n": 25,
+      "d": 25,
+      "value": 1.0
+    },
+    "all_fields_correct": {
+      "n": 29,
+      "d": 29,
+      "value": 1.0
+    },
+    "proposals_with_check_violations": 0,
+    "inappropriate_write_action_proposals": {
+      "n": 0,
+      "tickets": []
+    },
+    "by_scenario_type_all_fields_correct": {
+      "ambiguous": {
+        "n": 2,
+        "d": 2,
+        "value": 1.0
+      },
+      "conflicting_sources": {
+        "n": 1,
+        "d": 1,
+        "value": 1.0
+      },
+      "injection": {
+        "n": 1,
+        "d": 1,
+        "value": 1.0
+      },
+      "missing_evidence": {
+        "n": 2,
+        "d": 2,
+        "value": 1.0
+      },
+      "ordinary": {
+        "n": 21,
+        "d": 21,
+        "value": 1.0
+      },
+      "repeated_request": {
+        "n": 2,
+        "d": 2,
+        "value": 1.0
+      }
+    }
+  },
+  "latency_s_per_ticket": {
+    "median": 4.646,
+    "max": 6.01
+  },
+  "model_load_s": 1.55,
+  "total_wall_s": 138.8,
+  "total_process_cpu_s": 848.7,
+  "tokens": {
+    "prompt": 14451,
+    "completion": 2204
+  }
+}
