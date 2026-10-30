@@ -1,0 +1,22 @@
+{
+  "permissions_version": "permissions-v1",
+  "catalog_version": "actions-v1",
+  "note": "Fictional reviewer roles. Every action, including non-write ones, needs an explicit human approval before the mock runs it. 'max_amount_eur' narrows the catalogue limit for a role.",
+  "roles": {
+    "agent": {
+      "send_password_reset_link": {}, "unlock_account": {}, "resend_invoice": {}, "send_tracking_update": {},
+      "request_damage_photos": {}, "create_warranty_case": {}, "change_plan": {}, "link_to_incident": {},
+      "issue_refund": {"max_amount_eur": 50},
+      "request_clarification": {}, "escalate_to_human": {}
+    },
+    "team_lead": {
+      "send_password_reset_link": {}, "unlock_account": {}, "resend_invoice": {}, "send_tracking_update": {},
+      "request_damage_photos": {}, "create_warranty_case": {}, "change_plan": {}, "link_to_incident": {},
+      "issue_refund": {"max_amount_eur": 200}, "create_replacement_order": {}, "cancel_subscription": {},
+      "request_clarification": {}, "escalate_to_human": {}
+    },
+    "privacy_officer": {
+      "open_privacy_request": {}, "request_clarification": {}, "escalate_to_human": {}
+    }
+  }
+}
