@@ -1,0 +1,37 @@
+{
+  "note": "Recorded before the first and only P1.06 run. scripts/heldout_eval.py refuses to run if any hash differs.",
+  "frozen_commits": {
+    "scenarios_v2_heldout": "956e996",
+    "rules_baseline": "a243179 (threshold tuned on v1 dev only)",
+    "retriever_for_model": "BM25 top-3, f28c018",
+    "model_prompt_v5": "a4c0688",
+    "desk_and_behaviour_check": "3a52806, read helpers added in 29419a6"
+  },
+  "files": {
+    "data/tickets/scenarios_v2_heldout.jsonl": "c0924a02f837c57f7561eef1f135faa6a5e5b0494e35647f4e5b4be438787d8d",
+    "data/tickets/scenarios_v1.jsonl": "63a247405767b34d520b20a4f7d8dcf38f63b054f7f6af4ceb3976faa69642a4",
+    "opsdesk/baseline.py": "bf3d5de728c64a5351e18433979356481a81390c6a991494b135569e1f82d7ca",
+    "opsdesk/handbook.py": "23801223a7a515256962217ea8e349f624fb14a60ebf67c2f202e3e369c4591f",
+    "opsdesk/retrieval.py": "e4d58f7d7879dc2edf67f4061d549a111f99186cddb174395988ff7601f2284a",
+    "opsdesk/model_proposer.py": "808880b9c7f630d59a8e3fe7aac7c63f539e9f84c35c4f631f143663c1d67f57",
+    "opsdesk/schemas.py": "b4200fc0a816ac848042d3ac7347c13151826fbde3f9a82b7698016403d8b248",
+    "opsdesk/evaluate_model.py": "4e4d446b297005eea78fd3e5b4ba62185b65eb22820d0b482ebc5abf285f8779",
+    "data/actions_v1.json": "b360e0f2fd2865a1f40276257699c577d04fad657030b02e1606a802902fe99e",
+    "data/permissions_v1.json": "53dbeca3c34bf07c78ef8667ace5be7f607c945ed977235ab0a628eb6e924401",
+    "scripts/behaviour_check.py": "a6f0a2527e64a3ecc2e047a16f3eca5f181c9d4fc26b7fca57ee418af76c04f4",
+    "opsdesk/desk.py": "c140183306f8793f5d53f56fed786f14d4deba3fb9bd52979cade0ab6d0b0508",
+    "data/handbook/00_README.md": "8227357cbc1775f824712a569c22c025b97be4ccd4e6c7552bccb14f2854ad9e",
+    "data/handbook/account_access.md": "2b87d476e0998a9c2b971ff87c162c1e94b94dd4815eb7a99ccf40d58905a66c",
+    "data/handbook/billing.md": "de543b93c3618bce85c5779f020518d05852de6e7a3d8145363b44174830a3d7",
+    "data/handbook/orders.md": "0b20ddd6e3d02aa872a2435d701df027f1da1a495bd1c49b7126ccbbb71b6627",
+    "data/handbook/outages.md": "45d984e3d0f57c933ef199a30de4725c27c065b0f17544bec2f4f3389b7af851",
+    "data/handbook/priority_guide.md": "03b1b2dc26fadcffd3075a73d3df38b8960d1dee041befadc43f2d4cf28495f1",
+    "data/handbook/privacy.md": "332ca561a7c47e0bf5c7d1313eec6419489ae64721882069d95edd6a56ce1c92",
+    "data/handbook/product_defect.md": "e51f6c10a26ffacae05fac30b3fd8d381a84295edc8d3a7c3470aa5cf8552b21",
+    "data/handbook/shipping_damage.md": "7761110a1ed02e01b3bad656ea455e7d2202bc2f33d8a94dcc9aa1dce31c7c78",
+    "data/handbook/subscription.md": "4eb795c59e4ff6295f63e7bafbb6565508752cdad2869d37a8c11d47a57df7aa"
+  },
+  "model": "Qwen/Qwen2.5-1.5B-Instruct-GGUF@91cad51170dc346986eccefdc2dd33a9da36ead9 qwen2.5-1.5b-instruct-q4_k_m.gguf",
+  "model_sha256": "6a1a2eb6d15622bf3c96857206351ba97e1af16c30d7a74ee38970e434e9407e",
+  "dense_model_not_used": "bge-small was compared in P1.03 only"
+}
