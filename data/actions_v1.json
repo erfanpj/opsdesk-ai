@@ -1,0 +1,31 @@
+{
+  "catalog_version": "actions-v1",
+  "note": "Fictional action catalogue for the OpsDesk demo. Every action is a mock; nothing here calls a real system.",
+  "categories": {
+    "account_access": ["send_password_reset_link", "unlock_account"],
+    "billing": ["issue_refund", "resend_invoice"],
+    "order_status": ["send_tracking_update"],
+    "shipping_damage": ["request_damage_photos", "create_replacement_order"],
+    "product_defect": ["create_warranty_case"],
+    "subscription": ["change_plan", "cancel_subscription"],
+    "privacy_request": ["open_privacy_request"],
+    "service_outage": ["link_to_incident"]
+  },
+  "always_allowed": ["request_clarification", "escalate_to_human"],
+  "actions": {
+    "send_password_reset_link": {"writes": true, "required_params": ["customer_id"]},
+    "unlock_account": {"writes": true, "required_params": ["customer_id"]},
+    "issue_refund": {"writes": true, "required_params": ["order_id", "amount_eur"], "limits": {"amount_eur_max": 200}},
+    "resend_invoice": {"writes": true, "required_params": ["order_id"]},
+    "send_tracking_update": {"writes": true, "required_params": ["order_id"]},
+    "request_damage_photos": {"writes": true, "required_params": ["order_id"]},
+    "create_replacement_order": {"writes": true, "required_params": ["order_id"]},
+    "create_warranty_case": {"writes": true, "required_params": ["order_id"]},
+    "change_plan": {"writes": true, "required_params": ["customer_id", "new_plan"]},
+    "cancel_subscription": {"writes": true, "required_params": ["customer_id"]},
+    "open_privacy_request": {"writes": true, "required_params": ["customer_id", "request_type"]},
+    "link_to_incident": {"writes": true, "required_params": ["incident_id"]},
+    "request_clarification": {"writes": false, "required_params": []},
+    "escalate_to_human": {"writes": false, "required_params": []}
+  }
+}
