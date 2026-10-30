@@ -278,21 +278,34 @@ sample, so these figures are only rough.
 
 ## Running it
 
+Python 3.13 and [uv](https://docs.astral.sh/uv/) were used; a plain `python -m venv` with `pip` also works. Everything runs on a CPU.
+
 ```bash
+git clone <this repository> && cd opsdesk-ai
 uv venv --python 3.13 .venv && . .venv/bin/activate
 uv pip install -r requirements.txt
-python -m pytest -q tests
-python scripts/build_scenarios.py        # rebuilds the scenario file; the hash must match SHA256SUMS
-python -m opsdesk.evaluate --split test
-python scripts/behaviour_check.py      # P1.04 gate check on saved proposals
-python -m opsdesk.app                 # review screen on http://127.0.0.1:8765 (local only)
-# scripts/heldout_eval.py already ran once (results/p1_06/); it refuses to run again
 
-# P1.03 extras (CPU only): see requirements-local-models.txt for the torch and llama-cpp indexes
-python -m opsdesk.compare_retrieval --split dev
-# download the pinned GGUF file into models/ (or set OPSDESK_MODEL_PATH), then:
-python -m opsdesk.evaluate_model --split dev --out-prefix results/my_run
+python -m pytest -q tests                  # model-dependent tests are skipped without the extras below
+python scripts/build_scenarios.py          # rebuilds scenarios_v1.jsonl; must match data/tickets/SHA256SUMS
+sha256sum -c data/tickets/SHA256SUMS
+python -m opsdesk.evaluate --split test    # rules baseline on scenarios-v1 (prints JSON)
+python scripts/behaviour_check.py          # desk gate check on the saved proposals (rewrites results/p1_04_*, unchanged)
+python -m opsdesk.app                      # review screen on http://127.0.0.1:8765, local only; Ctrl+C to stop
 ```
+
+The MCP adapter runs over stdio: `python -m opsdesk.mcp_adapter --db opsdesk.sqlite`.
+
+**Optional: retrieval comparison and local model.** These need about 3 GB of extra packages, plus a 1.1 GB model file that is not in the repository:
+
+```bash
+uv pip install --index-url https://download.pytorch.org/whl/cpu torch==2.15.0
+uv pip install -r requirements-local-models.txt --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+python scripts/download_model.py           # Qwen2.5-1.5B-Instruct GGUF q4_k_m at a pinned revision, sha256 checked
+python -m opsdesk.compare_retrieval --split dev
+python -m opsdesk.evaluate_model --split dev --out-prefix /tmp/my_run   # about 2 minutes on 8 CPU threads
+```
+
+`scripts/heldout_eval.py` has already run once (`results/p1_06/`) and refuses to run again.
 
 ## AI assistance
 
