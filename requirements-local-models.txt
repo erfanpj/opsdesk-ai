@@ -1,0 +1,11 @@
+# P1.03 extras: retrieval comparison and local model proposals (CPU only).
+# torch from the CPU index: uv pip install --index-url https://download.pytorch.org/whl/cpu torch==2.15.0
+-r requirements.txt
+rank-bm25==0.2.2
+torch==2.15.0
+sentence-transformers==6.2.0
+transformers==5.22.1
+huggingface-hub==2.4.0
+numpy==2.5.4
+# prebuilt CPU wheel: --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+llama-cpp-python==0.3.36

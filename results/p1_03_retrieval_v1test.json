@@ -1,0 +1,233 @@
+{
+  "split": "scenarios-v1 test",
+  "n": 58,
+  "dense_model": "BAAI/bge-small-en-v1.5@5c38ec7c",
+  "index_build_cpu_s": 5.52,
+  "retrievers": {
+    "keyword": {
+      "hit_at_1": {
+        "n": 48,
+        "d": 49
+      },
+      "recall_at_3": {
+        "n": 49,
+        "d": 49
+      },
+      "mrr_at_3": 0.9898,
+      "no_evidence_top_score": {
+        "supported_min": 1.1814,
+        "unsupported_or_vague_max": 0.1649,
+        "n_unsupported_or_vague": 9,
+        "oracle_threshold_balanced_acc_on_this_split": 1.0,
+        "oracle_threshold": 1.1814206071913729,
+        "dev_threshold_balanced_acc": {
+          "threshold_from_dev": 1.2592072420775269,
+          "value": 0.9898
+        }
+      },
+      "median_latency_ms": 0.13,
+      "misses_at_1": [
+        {
+          "ticket": "T-0080",
+          "expected": "HB-BIL-04",
+          "top3": [
+            "HB-BIL-03",
+            "HB-BIL-04",
+            "HB-ACC-01"
+          ]
+        }
+      ]
+    },
+    "bm25": {
+      "hit_at_1": {
+        "n": 48,
+        "d": 49
+      },
+      "recall_at_3": {
+        "n": 49,
+        "d": 49
+      },
+      "mrr_at_3": 0.9898,
+      "no_evidence_top_score": {
+        "supported_min": 5.5005,
+        "unsupported_or_vague_max": 3.3564,
+        "n_unsupported_or_vague": 9,
+        "oracle_threshold_balanced_acc_on_this_split": 1.0,
+        "oracle_threshold": 5.50049047974389,
+        "dev_threshold_balanced_acc": {
+          "threshold_from_dev": 6.74577488341359,
+          "value": 0.9694
+        }
+      },
+      "median_latency_ms": 0.08,
+      "misses_at_1": [
+        {
+          "ticket": "T-0024",
+          "expected": "HB-BIL-03",
+          "top3": [
+            "HB-BIL-04",
+            "HB-BIL-03",
+            "HB-ACC-01"
+          ]
+        }
+      ]
+    },
+    "dense": {
+      "hit_at_1": {
+        "n": 43,
+        "d": 49
+      },
+      "recall_at_3": {
+        "n": 49,
+        "d": 49
+      },
+      "mrr_at_3": 0.9354,
+      "no_evidence_top_score": {
+        "supported_min": 0.5455,
+        "unsupported_or_vague_max": 0.6657,
+        "n_unsupported_or_vague": 9,
+        "oracle_threshold_balanced_acc_on_this_split": 0.8628,
+        "oracle_threshold": 0.6370731592178345,
+        "dev_threshold_balanced_acc": {
+          "threshold_from_dev": 0.5842715501785278,
+          "value": 0.7574
+        }
+      },
+      "median_latency_ms": 8.43,
+      "misses_at_1": [
+        {
+          "ticket": "T-0026",
+          "expected": "HB-ORD-01",
+          "top3": [
+            "HB-ORD-02",
+            "HB-ORD-01",
+            "HB-DMG-01"
+          ]
+        },
+        {
+          "ticket": "T-0037",
+          "expected": "HB-DMG-02",
+          "top3": [
+            "HB-DMG-01",
+            "HB-DMG-02",
+            "HB-ORD-02"
+          ]
+        },
+        {
+          "ticket": "T-0038",
+          "expected": "HB-DMG-02",
+          "top3": [
+            "HB-DMG-01",
+            "HB-DMG-02",
+            "HB-ORD-02"
+          ]
+        },
+        {
+          "ticket": "T-0051",
+          "expected": "HB-SUB-02",
+          "top3": [
+            "HB-SUB-01",
+            "HB-SUB-02",
+            "HB-DMG-02"
+          ]
+        },
+        {
+          "ticket": "T-0059",
+          "expected": "HB-OUT-01",
+          "top3": [
+            "HB-BIL-04",
+            "HB-OUT-01",
+            "HB-ACC-02"
+          ]
+        },
+        {
+          "ticket": "T-0060",
+          "expected": "HB-OUT-01",
+          "top3": [
+            "HB-ORD-01",
+            "HB-DMG-02",
+            "HB-OUT-01"
+          ]
+        }
+      ]
+    },
+    "hybrid": {
+      "hit_at_1": {
+        "n": 45,
+        "d": 49
+      },
+      "recall_at_3": {
+        "n": 49,
+        "d": 49
+      },
+      "mrr_at_3": 0.9592,
+      "no_evidence_top_score": {
+        "supported_min": 0.0325,
+        "unsupported_or_vague_max": 0.0328,
+        "n_unsupported_or_vague": 9,
+        "oracle_threshold_balanced_acc_on_this_split": 0.8889,
+        "oracle_threshold": 0.03252247488101534,
+        "dev_threshold_balanced_acc": {
+          "threshold_from_dev": 0.03252247488101534,
+          "value": 0.8889
+        }
+      },
+      "median_latency_ms": 8.56,
+      "misses_at_1": [
+        {
+          "ticket": "T-0037",
+          "expected": "HB-DMG-02",
+          "top3": [
+            "HB-DMG-01",
+            "HB-DMG-02",
+            "HB-ACC-03"
+          ]
+        },
+        {
+          "ticket": "T-0038",
+          "expected": "HB-DMG-02",
+          "top3": [
+            "HB-DMG-01",
+            "HB-DMG-02",
+            "HB-BIL-03"
+          ]
+        },
+        {
+          "ticket": "T-0051",
+          "expected": "HB-SUB-02",
+          "top3": [
+            "HB-SUB-01",
+            "HB-SUB-02",
+            "HB-BIL-04"
+          ]
+        },
+        {
+          "ticket": "T-0060",
+          "expected": "HB-OUT-01",
+          "top3": [
+            "HB-ORD-01",
+            "HB-OUT-01",
+            "HB-DMG-02"
+          ]
+        }
+      ]
+    }
+  },
+  "outdated_policy_check_with_superseded_indexed": {
+    "bm25": {
+      "top1_is_superseded": 2,
+      "top1_superseded_on_conflicting_tickets": 2,
+      "n_conflicting_tickets": 2,
+      "resolved_hits_still_superseded": 0,
+      "d": 49
+    },
+    "dense": {
+      "top1_is_superseded": 1,
+      "top1_superseded_on_conflicting_tickets": 1,
+      "n_conflicting_tickets": 2,
+      "resolved_hits_still_superseded": 0,
+      "d": 49
+    }
+  },
+  "total_cpu_s": 18.66
+}
