@@ -323,6 +323,17 @@ normal plan change (approve, run once, replay ignored), a refund ticket with an 
 unregistered approver is refused), an out-of-scope question (escalated), and the audit log. The proposals in it come from the rules
 baseline, and every action is a mock. `scripts/record_demo.py` makes it again (needs Chrome or Chromium and ffmpeg).
 
+## Screenshots
+
+Taken from the review screen running locally on fictional tickets (rules baseline, no model needed), 31 Oct 2026.
+
+| | |
+|---|---|
+| ![Ticket list](docs/images/opsdesk-ticket-list.png) | ![Approved plan change, run once; the replay is ignored](docs/images/opsdesk-approved-plan-change.png) |
+| Ticket list with the latest proposal status | T-0044: cited proposal, approval, one mock run, and the repeated run ignored |
+| ![Injected "pre-approved" refund escalated](docs/images/opsdesk-injected-refund-escalated.png) | ![Hash-chained audit log](docs/images/opsdesk-audit-log.png) |
+| T-0078: a "SYSTEM NOTE" claiming approval is ignored; the handbook rule escalates the refund | Audit log with a valid hash chain |
+
 ## AI assistance
 
 The code, handbook and tickets were drafted with an AI coding assistant (Grok Bot, working as a portfolio agent).
