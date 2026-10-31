@@ -198,6 +198,35 @@ def test_executed_proposal_cannot_be_revised(world):
         desk.revise(p.proposal_id, "rev-agent", r)
 
 
+def test_revise_wrong_ticket_leaves_approved_intact(world):
+    desk, backend, t = world
+    p = proposal(t, "change_plan", "HB-SUB-01", {"customer_id": t.customer_id, "new_plan": "Pro"})
+    desk.submit(t, p)
+    a = desk.decide(p.proposal_id, "rev-agent", "approve", p.content_hash())
+    bad = proposal(t, "change_plan", "HB-SUB-01", {"customer_id": t.customer_id, "new_plan": "Basic"}, n=4)
+    bad = bad.model_copy(update={"ticket_id": "T-9999"})
+    with pytest.raises(DeskError, match="different ticket"):
+        desk.revise(p.proposal_id, "rev-agent", bad)
+    assert desk.state(p.proposal_id) == "approved"
+    assert desk.execute(a.approval_id).outcome == "succeeded"
+    assert len(backend.calls) == 1
+
+
+def test_revise_duplicate_proposal_id_leaves_approved_intact(world):
+    desk, backend, t = world
+    p = proposal(t, "change_plan", "HB-SUB-01", {"customer_id": t.customer_id, "new_plan": "Pro"})
+    desk.submit(t, p)
+    a = desk.decide(p.proposal_id, "rev-agent", "approve", p.content_hash())
+    other = proposal(t, "change_plan", "HB-SUB-01", {"customer_id": t.customer_id, "new_plan": "Basic"}, n=5)
+    desk.submit(t, other)
+    dup = other.model_copy(update={"proposal_id": other.proposal_id})
+    with pytest.raises(DeskError, match="already exists"):
+        desk.revise(p.proposal_id, "rev-agent", dup)
+    assert desk.state(p.proposal_id) == "approved"
+    assert desk.execute(a.approval_id).outcome == "succeeded"
+    assert len(backend.calls) == 1
+
+
 # ---- idempotency and retries ---------------------------------------------------------------
 
 def test_replaying_an_approval_does_not_execute_twice(world):

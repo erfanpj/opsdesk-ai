@@ -243,6 +243,7 @@ Open http://127.0.0.1:8767/fixture-demo/ . Walk through **T-0044** (approve → 
 retrieval-comparison or model work, in commit 956e996, and they avoid the handbook's keyword wording where a customer would not use it. Before the run, the hashes of the
 held-out file, the rules baseline (a243179), the retrievers (f28c018), model prompt v5 (a4c0688), the desk and the model file were
 recorded in `data/FROZEN_P1_06.json`. The script checks them and refuses a second run. Nothing was changed after the results were seen.
+`tests/test_heldout.py` checks the working tree against that manifest for every frozen file **except** `opsdesk/desk.py` and `opsdesk/schemas.py`, which were edited after P1.06 for portfolio lifecycle demos; those two are verified at the immutable baseline commit `ebba3e8b06de064db74974684b35ed9d3ef7eb05` with `git show ebba3e8:<path>` (needs a full clone — a source-only export without `.git` cannot run that historical step).
 Full outputs, failures and audit logs are in `results/p1_06/`.
 
 | Held-out, 60 tickets | Rules baseline | Local model (v5) | For comparison: rules / model on v1 test |
@@ -337,12 +338,14 @@ baseline, and every action is a mock. `scripts/record_demo.py` makes it again (n
 
 ## Screenshots
 
-Taken 31 Oct 2026. Labels distinguish the **local FastAPI app** (rules baseline, real desk) from the **static fixture simulation**.
+Taken 31 Oct 2026 (correction pass). Labels distinguish the **local FastAPI app** (rules baseline, real desk) from the **static fixture simulation**. Viewports are cropped to content (no full-desktop empty margin).
 
 | | |
 |---|---|
 | ![Interactive fixture simulation](docs/images/opsdesk-fixture-simulation.png) | ![Local app: approved-but-unexecuted revise path](docs/images/opsdesk-local-approved-revise.png) |
-| Browser fixture: fictional plan change, voided approval, one receipt | Local review screen on 127.0.0.1 (not the fixture) |
+| Fixture **step 3**: Basic receipt after revise, idempotency `A-fixture-002`, duplicate-run message | Local **127.0.0.1**: approved-but-unexecuted banner + **Save edit as new draft** (light background) |
+| ![Fixture: refused stale approval](docs/images/opsdesk-fixture-stale-refusal-narrow.png) | |
+| Fixture **step 2**: after revise, **Try old approval A-fixture-001** shows superseded refusal | |
 | ![Ticket list](docs/images/opsdesk-ticket-list.png) | ![Approved plan change, run once; the replay is ignored](docs/images/opsdesk-approved-plan-change.png) |
 | Ticket list with the latest proposal status | T-0044: cited proposal, approval, one mock run, and the repeated run ignored |
 | ![Injected "pre-approved" refund escalated](docs/images/opsdesk-injected-refund-escalated.png) | ![Hash-chained audit log](docs/images/opsdesk-audit-log.png) |

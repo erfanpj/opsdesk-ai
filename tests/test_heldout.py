@@ -1,4 +1,8 @@
-"""P1.06: the held-out evaluation ran once, on the frozen inputs, and cannot be re-run."""
+"""P1.06: the held-out evaluation ran once, on the frozen inputs, and cannot be re-run.
+
+Historical lifecycle files (`opsdesk/desk.py`, `opsdesk/schemas.py`) are verified at git commit
+``ebba3e8b06de064db74974684b35ed9d3ef7eb05`` via ``git show`` against ``data/FROZEN_P1_06.json``.
+"""
 import hashlib
 import json
 import subprocess
@@ -17,12 +21,32 @@ def test_results_are_for_the_frozen_heldout_file():
     assert s["frozen"]["files"] == frozen["files"]
 
 
+EBBA_BASELINE = "ebba3e8b06de064db74974684b35ed9d3ef7eb05"
+HISTORICAL_LIFECYCLE = ("opsdesk/schemas.py", "opsdesk/desk.py")
+
+
+def _git_blob_sha256(rev: str, rel: str) -> str | None:
+    """Return SHA-256 of file contents at ``rev:rel`` from a full clone, or None if unavailable."""
+    r = subprocess.run(
+        ["git", "show", f"{rev}:{rel}"],
+        cwd=ROOT,
+        capture_output=True,
+    )
+    if r.returncode != 0:
+        return None
+    return hashlib.sha256(r.stdout).hexdigest()
+
+
 def test_frozen_components_are_unchanged():
     frozen = json.loads((ROOT / "data" / "FROZEN_P1_06.json").read_text())
-    post_p106_lifecycle = {"opsdesk/schemas.py", "opsdesk/desk.py"}
     for rel, digest in frozen["files"].items():
-        if rel in post_p106_lifecycle:
-            continue  # P1.06 metrics used the frozen run; later portfolio lifecycle edits do not re-run it.
+        if rel in HISTORICAL_LIFECYCLE:
+            historical = _git_blob_sha256(EBBA_BASELINE, rel)
+            assert historical is not None, (
+                f"Could not read {rel} at {EBBA_BASELINE} via git show — use a full clone for historical verification"
+            )
+            assert historical == digest, f"{rel} at {EBBA_BASELINE} must match FROZEN_P1_06 manifest"
+            continue
         assert hashlib.sha256((ROOT / rel).read_bytes()).hexdigest() == digest, rel
 
 

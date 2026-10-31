@@ -80,14 +80,28 @@ def test_edit_creates_new_draft_and_scope_is_checked(client):
     new = r.json()
     assert new["proposal"]["params"]["new_plan"] == "Basic" and new["state"] == "proposed"
     assert c.get(f"/api/proposals/{pid}").json()["state"] == "superseded"
-    # an edit that points the action at another customer is stored with a problem and cannot be approved
+    # an edit that points the action at another customer is refused without superseding the valid draft
     r = c.post(f"/api/proposals/{new['proposal']['proposal_id']}/revise",
                json={"reviewer_id": "rev-agent-ada", "seen_hash": new["content_hash"], "params": {"customer_id": "C-10001"}})
-    bad = r.json()
-    assert any("not the ticket's customer" in p for p in bad["problems"])
-    r = c.post(f"/api/proposals/{bad['proposal']['proposal_id']}/decision",
-               json={"reviewer_id": "rev-lead-ben", "decision": "approve", "seen_hash": bad["content_hash"]})
-    assert r.status_code == 409 and svc.desk.backend.calls == []
+    assert r.status_code == 409 and "problems" in r.json()["refused"]
+    assert c.get(f"/api/proposals/{new['proposal']['proposal_id']}").json()["state"] == "proposed"
+    assert svc.desk.backend.calls == []
+
+
+def test_execution_failed_shows_retry_not_revise_form(client):
+    c, svc = client
+    svc.desk.backend.fail_next = 1
+    d = draft(c, "T-0044")
+    pid, h = d["proposal"]["proposal_id"], d["content_hash"]
+    a = c.post(
+        f"/api/proposals/{pid}/decision",
+        json={"reviewer_id": "rev-agent-ada", "decision": "approve", "seen_hash": h},
+    ).json()
+    c.post(f"/api/approvals/{a['approval_id']}/execute")
+    html = c.get("/tickets/T-0044").text
+    assert "execution_failed" in html
+    assert "Save edit as new draft" not in html
+    assert "Approve</button>" in html
 
 
 def test_api_approved_unexecuted_revise_voids_old_approval(client):

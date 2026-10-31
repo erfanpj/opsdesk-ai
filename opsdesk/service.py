@@ -71,3 +71,8 @@ class OpsService:
                                              "rationale": (old.rationale + f" [edited by {reviewer_id}]")[:2000]})
             revised = Proposal.model_validate(revised.model_dump())  # re-run validation on the edited copy
             return self.desk.revise(proposal_id, reviewer_id, revised)
+
+    def execute_approved(self, approval_id: str):
+        """Supported entry point for mock execution (UI, API, MCP). Holds the service lock."""
+        with self.lock:
+            return self.desk.execute(approval_id)

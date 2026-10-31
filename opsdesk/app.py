@@ -18,7 +18,7 @@ from .desk import DeskError
 from .service import DEMO_REVIEWERS, OpsService
 
 LOCAL_HOSTS = ["127.0.0.1", "localhost", "testserver"]
-CSS = """body{font-family:system-ui,sans-serif;margin:24px;max-width:1100px;color:#222}h1{font-size:20px}h2{font-size:16px;margin-top:22px}
+CSS = """body{font-family:system-ui,sans-serif;margin:24px;max-width:1100px;color:#1a2332;background:#f4f7fb}h1{font-size:20px}h2{font-size:16px;margin-top:22px}
 .banner{background:#fff3cd;border:1px solid #e0c46c;padding:6px 10px;font-size:13px}.err{background:#fde2e1;border:1px solid #e99;padding:6px 10px}
 table{border-collapse:collapse;width:100%;font-size:13px}td,th{border:1px solid #ccc;padding:4px 6px;text-align:left;vertical-align:top}
 .card{border:1px solid #bbb;border-radius:6px;padding:10px;margin:10px 0}.state{font-weight:bold;padding:1px 6px;border-radius:4px;background:#eee}
@@ -113,9 +113,9 @@ def create_app(service: OpsService | None = None) -> FastAPI:
                             f"<input type='hidden' name='seen_hash' value='{e(pj['content_hash'])}'>"
                             "<input name='reason' placeholder='reason (needed to reject)'> "
                             "<button name='decision' value='approve'>Approve</button> <button name='decision' value='reject'>Reject</button></form>")
-            elif st == "approved" and not pj["executions"]:
+            elif st == "approved" and not any(x["outcome"] == "succeeded" for x in pj["executions"]):
                 body.append(f"<p><em>Approved but not run yet. Editing supersedes this version and voids its approval for execution.</em></p>")
-            if st in ("proposed", "execution_failed") or (st == "approved" and not any(x["outcome"] == "succeeded" for x in pj["executions"])):
+            if st == "proposed" or (st == "approved" and not any(x["outcome"] == "succeeded" for x in pj["executions"])):
                 fields = "".join(f"{e(k)} <input name='param_{e(k)}' value='{e(val)}' size='10'> " for k, val in p["params"].items())
                 body.append(f"<form class='inline' method='post' action='/proposals/{e(p['proposal_id'])}/revise'>{reviewer_select()}"
                             f"<input type='hidden' name='seen_hash' value='{e(pj['content_hash'])}'>{fields}<button>Save edit as new draft</button></form>")
@@ -183,8 +183,7 @@ def create_app(service: OpsService | None = None) -> FastAPI:
     def execute_form(approval_id: str):
         row = svc.desk.db.execute("SELECT proposal_id FROM approvals WHERE approval_id=?", (approval_id,)).fetchone()
         try:
-            with svc.lock:
-                svc.desk.execute(approval_id)
+            svc.execute_approved(approval_id)
         except DeskError as x:
             if row is None:
                 raise HTTPException(409, str(x))
@@ -255,8 +254,7 @@ def create_app(service: OpsService | None = None) -> FastAPI:
     @app.post("/api/approvals/{approval_id}/execute")
     def api_execute(approval_id: str):
         try:
-            with svc.lock:
-                ev = svc.desk.execute(approval_id)
+            ev = svc.execute_approved(approval_id)
         except DeskError as x:
             return conflict(x)
         return json.loads(ev.model_dump_json())

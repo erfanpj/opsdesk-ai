@@ -206,7 +206,7 @@ class Desk:
         return row is not None
 
     def revise(self, proposal_id: str, reviewer_id: str, revised: Proposal) -> str:
-        """A reviewer edits a draft, or revises an approved-but-unexecuted draft. The old version is superseded."""
+        """A reviewer edits a draft, or revises an approved-but-unexecuted draft. The old version is superseded only after the replacement is stored."""
         p, state, _ = self._proposal(proposal_id)
         if p is None or reviewer_id not in self.reviewers:
             self._refuse("revision_refused", proposal_id, reviewer_id, "unknown proposal or reviewer")
@@ -219,9 +219,18 @@ class Desk:
             self._refuse("revision_refused", proposal_id, reviewer_id, "executed proposals cannot be revised")
         else:
             self._refuse("revision_refused", proposal_id, reviewer_id, f"proposal is {state}")
+        if revised.ticket_id != p.ticket_id:
+            self._refuse("revision_refused", proposal_id, reviewer_id, "proposal belongs to a different ticket")
+        if self._proposal(revised.proposal_id)[0] is not None:
+            self._refuse("revision_refused", proposal_id, reviewer_id, "proposal id already exists")
+        ticket = self._ticket(p.ticket_id)
+        problems = check_proposal(revised, self.catalog, self.passages) + self.scope_problems(revised, ticket)
+        if problems:
+            self._refuse("revision_refused", proposal_id, reviewer_id, f"revised proposal has problems: {problems}")
+        new_id = self.submit(ticket, revised)
         self._set_state(proposal_id, state, "superseded")
         self._log("superseded", proposal_id, reviewer_id, {"by": revised.proposal_id, "prior_state": state})
-        return self.submit(self._ticket(p.ticket_id), revised)
+        return new_id
 
     def execute(self, approval_id: str) -> ExecutionEvent:
         """Run the mock action for a recorded approval. Replaying the same approval never runs it twice."""

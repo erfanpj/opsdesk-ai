@@ -9,7 +9,8 @@ def test_fixture_banner_and_reset_present():
     js = (ROOT / "app.js").read_text(encoding="utf-8")
     assert "Interactive fixture simulation" in html
     assert "No model, no server" in html
-    assert "Reset fixture" in js
+    assert "Reset this ticket" in js
+    assert "opsdesk-fixture-v2" in js
     assert "duplicate run" in js.lower() or "duplicate" in js.lower()
 
 

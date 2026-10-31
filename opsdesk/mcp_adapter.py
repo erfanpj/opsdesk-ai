@@ -56,8 +56,7 @@ def build_server(svc: OpsService) -> MCPServer:
     @server.tool(description="Run the mock action for an approval a human reviewer recorded. Refused otherwise; never runs twice.")
     def execute_approved_action(approval_id: str) -> dict:
         try:
-            with svc.lock:
-                ev = svc.desk.execute(approval_id)
+            ev = svc.execute_approved(approval_id)
         except DeskError as e:
             return {"refused": str(e)}
         return {"event_id": ev.event_id, "outcome": ev.outcome, "detail": ev.detail, "mock": True}

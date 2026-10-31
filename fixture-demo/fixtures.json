@@ -18,6 +18,12 @@
         "params": { "customer_id": "C-10018", "new_plan": "Plus" },
         "citation": "HB-SUB-01",
         "rationale": "Customer asked to upgrade from Basic to Plus."
+      },
+      "revised_proposal": {
+        "action": "change_plan",
+        "params": { "customer_id": "C-10018", "new_plan": "Basic" },
+        "citation": "HB-SUB-01",
+        "rationale": "Reviewer changed plan to Basic before execution (simulated edit)."
       }
     },
     {
