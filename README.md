@@ -176,8 +176,8 @@ The held-out set `scenarios_v2_heldout.jsonl` was not used for any of this. It w
   that needs its own approval.
 - **Scope.** Customer and order parameters must match the ticket's own fields, and parameters outside the catalogue are refused.
   The catalogue has no "all customers" action.
-- **Once only.** The approval id is the idempotency key. Replays return `duplicate_ignored` and do not call the mock. A unique index in SQLite also
-  refuses a second success. A failed run can only be retried after a new approval.
+- **Run once per approval (bounded demo).** The approval id is the idempotency key. **Sequential** replays on the supported local path (FastAPI review screen, JSON API and MCP adapter through `OpsService`) return `duplicate_ignored` and do not call the mock again. A partial unique index records at most one successful execution row per approval id. That index does **not** by itself stop a second mock side effect if two threads call `Desk.execute` directly without the service lock, or if the process crashes after the mock mutates in-memory state but before the row is written. This project does not claim production exactly-once or one action per ticket—only one mock run per **approval id** on the serialized UI/API/MCP path that the tests exercise.
+- **Edits and approvals.** While a proposal is still `proposed`, or `approved` but not yet executed successfully, a reviewer edit supersedes that version and voids its approval for execution. Executed proposals cannot be edited in place. A failed run needs a new human approval before retry.
 - **Audit log.** Proposals, refusals, approvals, rejections, revisions, runs and ignored duplicates are appended to a hash-chained
   table. `verify_audit_chain()` detects edits.
 
@@ -211,7 +211,7 @@ a correct-looking model proposal because the refund amount was missing.
 `python -m opsdesk.app` starts a local review screen at http://127.0.0.1:8765. It only listens on 127.0.0.1, and other
 Host headers are refused. For each fictional ticket it shows the text (marked as untrusted), the three retrieved handbook passages with version and
 score, and each proposal with its action, parameters, verbatim citation, any problems and its state. A reviewer can
-approve, reject (a reason is required), edit the parameters (which creates a new draft), run an approved mock action, and read the
+approve, reject (a reason is required), edit parameters (including revising an approved-but-unexecuted draft, which supersedes the old approval), run an approved mock action, and read the
 hash-checked audit log. The same operations exist as a JSON API under `/api/`. There is **no login**. The reviewer is picked from
 three fictional demo reviewers, which is fine for a local demo and is not access control.
 
@@ -224,6 +224,18 @@ tool call fails; after a human approval the action runs once and the replay is i
 that shares the SQLite file with the review side.
 
 A recording of the review flow is described under Demo below.
+
+## Interactive fixture simulation (static, no backend)
+
+`fixture-demo/` is a **dependency-free browser simulation** for portfolio visitors who cannot run FastAPI locally. It uses a small subset of the same fictional dev tickets and handbook quotes (`fixtures.json`). The banner on the page states clearly that there is **no model, no server writes, and no real customer action**—only `localStorage` state that **Reset** clears.
+
+Preview from the repository root (same layout as GitHub Pages would serve):
+
+```powershell
+python -m http.server 8767 --bind 127.0.0.1
+```
+
+Open http://127.0.0.1:8767/fixture-demo/ . Walk through **T-0044** (approve → revise voids the old approval → approve revised → one simulated receipt → duplicate run refused) or **T-0078** (reject a wrong refund proposal). This simulation is **not** the runnable Python desk and does not re-measure the saved 37/60 versus 25/60 comparison.
 
 ## Held-out evaluation
 
@@ -325,10 +337,12 @@ baseline, and every action is a mock. `scripts/record_demo.py` makes it again (n
 
 ## Screenshots
 
-Taken from the review screen running locally on fictional tickets (rules baseline, no model needed), 31 Oct 2026.
+Taken 31 Oct 2026. Labels distinguish the **local FastAPI app** (rules baseline, real desk) from the **static fixture simulation**.
 
 | | |
 |---|---|
+| ![Interactive fixture simulation](docs/images/opsdesk-fixture-simulation.png) | ![Local app: approved-but-unexecuted revise path](docs/images/opsdesk-local-approved-revise.png) |
+| Browser fixture: fictional plan change, voided approval, one receipt | Local review screen on 127.0.0.1 (not the fixture) |
 | ![Ticket list](docs/images/opsdesk-ticket-list.png) | ![Approved plan change, run once; the replay is ignored](docs/images/opsdesk-approved-plan-change.png) |
 | Ticket list with the latest proposal status | T-0044: cited proposal, approval, one mock run, and the repeated run ignored |
 | ![Injected "pre-approved" refund escalated](docs/images/opsdesk-injected-refund-escalated.png) | ![Hash-chained audit log](docs/images/opsdesk-audit-log.png) |
@@ -336,8 +350,7 @@ Taken from the review screen running locally on fictional tickets (rules baselin
 
 ## AI assistance
 
-The code, handbook and tickets were drafted with an AI coding assistant (Grok Bot, working as a portfolio agent).
-<!-- REVIEW: Erfan to confirm or reword this section before publishing. -->
+The fictional handbook, tickets and first implementation were drafted with AI coding assistance (Grok Bot). This portfolio pass added the static fixture simulation, approval-revision behaviour, bounded replay wording, tests and screenshots with AI coding assistance (Cursor / Composer). An automated Grok read-only review recorded limits before publication; independent human scientific validation is not claimed.
 
 ## Licence
 

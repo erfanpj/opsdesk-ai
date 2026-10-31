@@ -90,6 +90,32 @@ def test_edit_creates_new_draft_and_scope_is_checked(client):
     assert r.status_code == 409 and svc.desk.backend.calls == []
 
 
+def test_api_approved_unexecuted_revise_voids_old_approval(client):
+    c, svc = client
+    d = draft(c, "T-0044")
+    pid, h = d["proposal"]["proposal_id"], d["content_hash"]
+    a_old = c.post(
+        f"/api/proposals/{pid}/decision",
+        json={"reviewer_id": "rev-agent-ada", "decision": "approve", "seen_hash": h},
+    ).json()
+    r = c.post(
+        f"/api/proposals/{pid}/revise",
+        json={"reviewer_id": "rev-agent-ada", "seen_hash": h, "params": {"new_plan": "Basic"}},
+    )
+    assert r.status_code == 200
+    new = r.json()
+    assert c.get(f"/api/proposals/{pid}").json()["state"] == "superseded"
+    assert c.post(f"/api/approvals/{a_old['approval_id']}/execute").status_code == 409
+    assert svc.desk.backend.calls == []
+    a_new = c.post(
+        f"/api/proposals/{new['proposal']['proposal_id']}/decision",
+        json={"reviewer_id": "rev-agent-ada", "decision": "approve", "seen_hash": new["content_hash"]},
+    ).json()
+    outs = [c.post(f"/api/approvals/{a_new['approval_id']}/execute").json()["outcome"] for _ in range(2)]
+    assert outs == ["succeeded", "duplicate_ignored"]
+    assert len(svc.desk.backend.calls) == 1
+
+
 def test_html_forms_flow(client):
     c, svc = client
     c.post("/tickets/T-0044/draft")

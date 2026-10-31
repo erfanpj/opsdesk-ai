@@ -113,7 +113,9 @@ def create_app(service: OpsService | None = None) -> FastAPI:
                             f"<input type='hidden' name='seen_hash' value='{e(pj['content_hash'])}'>"
                             "<input name='reason' placeholder='reason (needed to reject)'> "
                             "<button name='decision' value='approve'>Approve</button> <button name='decision' value='reject'>Reject</button></form>")
-            if st == "proposed" and p["params"]:
+            elif st == "approved" and not pj["executions"]:
+                body.append(f"<p><em>Approved but not run yet. Editing supersedes this version and voids its approval for execution.</em></p>")
+            if st in ("proposed", "execution_failed") or (st == "approved" and not any(x["outcome"] == "succeeded" for x in pj["executions"])):
                 fields = "".join(f"{e(k)} <input name='param_{e(k)}' value='{e(val)}' size='10'> " for k, val in p["params"].items())
                 body.append(f"<form class='inline' method='post' action='/proposals/{e(p['proposal_id'])}/revise'>{reviewer_select()}"
                             f"<input type='hidden' name='seen_hash' value='{e(pj['content_hash'])}'>{fields}<button>Save edit as new draft</button></form>")

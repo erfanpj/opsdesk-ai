@@ -197,15 +197,30 @@ class Desk:
                   {"proposal_id": proposal_id, "role": r.role, "proposal_hash": a.proposal_hash, "reason": reason})
         return a
 
+    def _has_succeeded_execution(self, proposal_id: str) -> bool:
+        row = self.db.execute(
+            "SELECT 1 FROM executions e JOIN approvals a ON a.approval_id = e.idempotency_key "
+            "WHERE a.proposal_id=? AND e.outcome='succeeded' LIMIT 1",
+            (proposal_id,),
+        ).fetchone()
+        return row is not None
+
     def revise(self, proposal_id: str, reviewer_id: str, revised: Proposal) -> str:
-        """A reviewer edits a draft: the old one is superseded and the new one needs its own approval."""
+        """A reviewer edits a draft, or revises an approved-but-unexecuted draft. The old version is superseded."""
         p, state, _ = self._proposal(proposal_id)
         if p is None or reviewer_id not in self.reviewers:
             self._refuse("revision_refused", proposal_id, reviewer_id, "unknown proposal or reviewer")
-        if state != "proposed":
+        if state == "proposed":
+            pass
+        elif state == "approved":
+            if self._has_succeeded_execution(proposal_id):
+                self._refuse("revision_refused", proposal_id, reviewer_id, "executed proposals cannot be revised")
+        elif state == "executed":
+            self._refuse("revision_refused", proposal_id, reviewer_id, "executed proposals cannot be revised")
+        else:
             self._refuse("revision_refused", proposal_id, reviewer_id, f"proposal is {state}")
         self._set_state(proposal_id, state, "superseded")
-        self._log("superseded", proposal_id, reviewer_id, {"by": revised.proposal_id})
+        self._log("superseded", proposal_id, reviewer_id, {"by": revised.proposal_id, "prior_state": state})
         return self.submit(self._ticket(p.ticket_id), revised)
 
     def execute(self, approval_id: str) -> ExecutionEvent:

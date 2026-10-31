@@ -154,7 +154,7 @@ class ExecutionEvent(Strict):
 
 TRANSITIONS: dict[str, frozenset[str]] = {
     "proposed": frozenset({"approved", "rejected", "superseded"}),
-    "approved": frozenset({"executed", "execution_failed"}),
+    "approved": frozenset({"executed", "execution_failed", "superseded"}),
     "execution_failed": frozenset({"approved", "rejected"}),  # retry needs a new human approval
     "rejected": frozenset(),
     "executed": frozenset(),

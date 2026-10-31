@@ -169,6 +169,35 @@ def test_revision_supersedes_and_needs_new_approval(world):
     assert backend.calls == []
 
 
+def test_approved_unexecuted_revise_voids_old_approval(world):
+    desk, backend, t = world
+    p = proposal(t, "change_plan", "HB-SUB-01", {"customer_id": t.customer_id, "new_plan": "Pro"})
+    desk.submit(t, p)
+    a_old = desk.decide(p.proposal_id, "rev-agent", "approve", p.content_hash())
+    r = proposal(t, "change_plan", "HB-SUB-01", {"customer_id": t.customer_id, "new_plan": "Basic"}, n=2)
+    desk.revise(p.proposal_id, "rev-agent", r)
+    assert desk.state(p.proposal_id) == "superseded"
+    with pytest.raises(DeskError, match="superseded"):
+        desk.execute(a_old.approval_id)
+    with pytest.raises(DeskError, match="no recorded approval"):
+        desk.execute("A-" + "0" * 12)
+    a_new = desk.decide(r.proposal_id, "rev-agent", "approve", r.content_hash())
+    assert desk.execute(a_new.approval_id).outcome == "succeeded"
+    assert len(backend.calls) == 1
+    assert backend.customers[t.customer_id]["plan"] == "Basic"
+
+
+def test_executed_proposal_cannot_be_revised(world):
+    desk, backend, t = world
+    p = proposal(t, "change_plan", "HB-SUB-01", {"customer_id": t.customer_id, "new_plan": "Pro"})
+    desk.submit(t, p)
+    a = desk.decide(p.proposal_id, "rev-agent", "approve", p.content_hash())
+    desk.execute(a.approval_id)
+    r = proposal(t, "change_plan", "HB-SUB-01", {"customer_id": t.customer_id, "new_plan": "Basic"}, n=3)
+    with pytest.raises(DeskError, match="executed proposals cannot be revised"):
+        desk.revise(p.proposal_id, "rev-agent", r)
+
+
 # ---- idempotency and retries ---------------------------------------------------------------
 
 def test_replaying_an_approval_does_not_execute_twice(world):
