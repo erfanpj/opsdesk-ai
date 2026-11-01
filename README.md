@@ -1,5 +1,7 @@
 # OpsDesk AI
 
+**Repository:** https://github.com/erfanpj/opsdesk-ai · **Interactive fixture (verified 2026-11-01):** https://erfanpj.github.io/opsdesk-ai/
+
 A small, local operations-desk demo. It reads a fictional support ticket, finds the matching procedure in a fictional
 handbook, and prepares a proposed action that cites that procedure. A person reviews the proposal on a local screen and can
 edit, approve or reject it. On the supported local service path (review screen, JSON API and MCP adapter through `OpsService`), an approved proposal runs **at most once per approval id** against a mock system. Nothing here touches a real system.
@@ -14,7 +16,7 @@ including where both approaches fall short.
 **All data in this repository is fictional.** "Lumen Lane Cycles", its handbook, customers, orders and
 tickets were written for this demo. Any resemblance to a real company or person is accidental.
 
-**For recruiters:** this repository shows cited proposals, human approval, revision, mock execution and a hash-chained audit log on fictional tickets. On a frozen held-out set of 60 tickets (evaluated once), a rules baseline reached **37/60** fully correct proposals versus **25/60** for a small local CPU model—the separate gate experiment used a scripted reviewer. Try the **browser fixture** (link below when live) to replay approval and receipt behaviour without running Python; the FastAPI desk and MCP adapter stay **local only**.
+**For recruiters:** this repository shows cited proposals, human approval, revision, mock execution and a hash-chained audit log on fictional tickets. On a frozen held-out set of 60 tickets (evaluated once), a rules baseline reached **37/60** fully correct proposals versus **25/60** for a small local CPU model—the separate gate experiment used a scripted reviewer. Try the **[browser fixture on GitHub Pages](https://erfanpj.github.io/opsdesk-ai/)** to replay approval and receipt behaviour without running Python; the FastAPI desk and MCP adapter stay **local only**.
 
 ## Status
 
@@ -237,7 +239,7 @@ Preview from the repository root (same layout as GitHub Pages would serve):
 python -m http.server 8767 --bind 127.0.0.1
 ```
 
-Open http://127.0.0.1:8767/fixture-demo/ . Walk through **T-0044** (approve → revise voids the old approval → approve revised → one simulated receipt → duplicate run refused) or **T-0078** (reject a wrong refund proposal). This simulation is **not** the runnable Python desk and does not re-measure the saved 37/60 versus 25/60 comparison.
+Open http://127.0.0.1:8767/fixture-demo/ locally, or use the **live static demo:** https://erfanpj.github.io/opsdesk-ai/ . Walk through **T-0044** (approve → revise voids the old approval → approve revised → one simulated receipt → duplicate run refused) or **T-0078** (reject a wrong refund proposal). This simulation is **not** the runnable Python desk and does not re-measure the saved 37/60 versus 25/60 comparison.
 
 ## Held-out evaluation
 
