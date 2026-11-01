@@ -3,18 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>OpsDesk — interactive fixture simulation</title>
+  <title>OpsDesk — interactive simulation</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="banner" role="status">
-    <strong>Interactive fixture simulation</strong> — fictional tickets and handbook text only.
-    No model, no server, no real customer actions. Browser storage holds per-ticket demo state; Reset this ticket restores that fixture only.
-  </header>
-  <main class="layout">
-    <nav id="nav" class="toolbar" aria-label="Fixture tickets"></nav>
-    <div id="content"></div>
-  </main>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <h1>OpsDesk</h1>
+        <p class="sim-note">Interactive simulation · fictional tickets only · no model, no server, no real actions</p>
+      </div>
+    </header>
+    <div class="app-body">
+      <aside id="queue" class="queue" aria-label="Ticket queue"></aside>
+      <section id="content" class="detail" aria-live="polite"></section>
+    </div>
+  </div>
   <script src="app.js" type="module"></script>
 </body>
 </html>

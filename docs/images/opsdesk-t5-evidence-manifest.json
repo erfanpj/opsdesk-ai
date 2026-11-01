@@ -1,0 +1,32 @@
+[
+  {
+    "file": "docs\\images\\opsdesk-local-approved-revise.png",
+    "viewport": "920x880",
+    "interaction": "HTTP draft + approve (approved-but-unexecuted)",
+    "outcome": "Save edit as new draft + approved banner visible"
+  },
+  {
+    "file": "docs\\images\\opsdesk-local-receipt-replay.png",
+    "viewport": "920x920",
+    "interaction": "HTTP approve + execute twice",
+    "outcome": "One succeeded execution + duplicate_ignored in page"
+  },
+  {
+    "file": "docs/images/opsdesk-fixture-simulation.png",
+    "viewport": "960x980",
+    "interaction": "Clicks: approve-plus \u2192 revise-basic \u2192 approve-basic \u2192 run-basic \u2192 replay",
+    "outcome": "Basic receipt idempotency A-fixture-002 + duplicate ignored message"
+  },
+  {
+    "file": "docs/images/opsdesk-fixture-simulation-mobile.png",
+    "viewport": "390x844",
+    "interaction": "Same click path at phone width (520px CSS breakpoint active)",
+    "outcome": "Stacked layout with receipt visible"
+  },
+  {
+    "file": "docs/images/opsdesk-fixture-stale-refusal-narrow.png",
+    "viewport": "390x820",
+    "interaction": "Clicks: approve-plus \u2192 revise-basic \u2192 run-stale",
+    "outcome": "Superseded approval refusal styling visible"
+  }
+]

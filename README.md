@@ -338,14 +338,16 @@ baseline, and every action is a mock. `scripts/record_demo.py` makes it again (n
 
 ## Screenshots
 
-Taken 31 Oct 2026 (correction pass). Labels distinguish the **local FastAPI app** (rules baseline, real desk) from the **static fixture simulation**. Viewports are cropped to content (no full-desktop empty margin).
+Taken 1 Nov 2026 (last-mile pass). The **local FastAPI app** uses real HTTP; the **fixture simulation** is captured by clicking real controls via CDP (`scripts/capture_t5_evidence.py`). Metadata: `docs/images/opsdesk-t5-evidence-manifest.json`.
 
 | | |
 |---|---|
-| ![Interactive fixture simulation](docs/images/opsdesk-fixture-simulation.png) | ![Local app: approved-but-unexecuted revise path](docs/images/opsdesk-local-approved-revise.png) |
-| Fixture **step 3**: Basic receipt after revise, idempotency `A-fixture-002`, duplicate-run message | Local **127.0.0.1**: approved-but-unexecuted banner + **Save edit as new draft** (light background) |
-| ![Fixture: refused stale approval](docs/images/opsdesk-fixture-stale-refusal-narrow.png) | |
-| Fixture **step 2**: after revise, **Try old approval A-fixture-001** shows superseded refusal | |
+| ![Fixture desktop — executed receipt](docs/images/opsdesk-fixture-simulation.png) | ![Fixture phone — same flow](docs/images/opsdesk-fixture-simulation-mobile.png) |
+| Desktop 960×980: approve → revise → approve Basic → run → duplicate ignored | Phone 390×844: stacked queue + receipt (`A-fixture-002`) |
+| ![Fixture — superseded approval refused](docs/images/opsdesk-fixture-stale-refusal-narrow.png) | ![Local — approved, edit allowed](docs/images/opsdesk-local-approved-revise.png) |
+| Phone 390×820: **Run superseded approval** after revise | Local 920×880: approved-but-unexecuted + **Save edit as new draft** |
+| ![Local — receipt and ignored replay](docs/images/opsdesk-local-receipt-replay.png) | |
+| Local 920×920: one mock run + **duplicate_ignored** on replay | |
 | ![Ticket list](docs/images/opsdesk-ticket-list.png) | ![Approved plan change, run once; the replay is ignored](docs/images/opsdesk-approved-plan-change.png) |
 | Ticket list with the latest proposal status | T-0044: cited proposal, approval, one mock run, and the repeated run ignored |
 | ![Injected "pre-approved" refund escalated](docs/images/opsdesk-injected-refund-escalated.png) | ![Hash-chained audit log](docs/images/opsdesk-audit-log.png) |

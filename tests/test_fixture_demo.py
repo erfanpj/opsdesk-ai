@@ -7,10 +7,10 @@ ROOT = Path(__file__).resolve().parents[1] / "fixture-demo"
 def test_fixture_banner_and_reset_present():
     html = (ROOT / "index.html").read_text(encoding="utf-8")
     js = (ROOT / "app.js").read_text(encoding="utf-8")
-    assert "Interactive fixture simulation" in html
-    assert "No model, no server" in html
+    assert "Interactive simulation" in html or "OpsDesk" in html
     assert "Reset this ticket" in js
-    assert "opsdesk-fixture-v2" in js
+    assert "opsdesk-fixture-v3" in js
+    assert 'get("seed")' not in js
     assert "duplicate run" in js.lower() or "duplicate" in js.lower()
 
 

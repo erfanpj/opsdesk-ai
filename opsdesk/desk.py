@@ -13,6 +13,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -89,6 +90,17 @@ class Desk:
         self.reviewers = {r.reviewer_id: r for r in reviewers}
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         self._n = 0
+
+    @contextmanager
+    def _transaction(self):
+        """SQLite writes in one commit; rollback on any failure (autocommit mode otherwise)."""
+        self.db.execute("BEGIN IMMEDIATE")
+        try:
+            yield
+            self.db.execute("COMMIT")
+        except BaseException:
+            self.db.execute("ROLLBACK")
+            raise
 
     # ---- audit log -------------------------------------------------------------------------
     def _log(self, kind: str, ref_id: str, actor: str, payload: dict) -> None:
@@ -227,9 +239,15 @@ class Desk:
         problems = check_proposal(revised, self.catalog, self.passages) + self.scope_problems(revised, ticket)
         if problems:
             self._refuse("revision_refused", proposal_id, reviewer_id, f"revised proposal has problems: {problems}")
-        new_id = self.submit(ticket, revised)
-        self._set_state(proposal_id, state, "superseded")
-        self._log("superseded", proposal_id, reviewer_id, {"by": revised.proposal_id, "prior_state": state})
+        with self._transaction():
+            new_id = self.submit(ticket, revised)
+            cur = self.db.execute(
+                "UPDATE proposals SET state=? WHERE proposal_id=? AND state=?",
+                ("superseded", proposal_id, state),
+            )
+            if cur.rowcount != 1:
+                raise DeskError("proposal state changed during revision")
+            self._log("superseded", proposal_id, reviewer_id, {"by": revised.proposal_id, "prior_state": state})
         return new_id
 
     def execute(self, approval_id: str) -> ExecutionEvent:

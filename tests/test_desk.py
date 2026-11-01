@@ -227,6 +227,28 @@ def test_revise_duplicate_proposal_id_leaves_approved_intact(world):
     assert len(backend.calls) == 1
 
 
+def test_revise_rolls_back_when_supersede_audit_fails(world):
+    desk, backend, t = world
+    p = proposal(t, "change_plan", "HB-SUB-01", {"customer_id": t.customer_id, "new_plan": "Pro"})
+    desk.submit(t, p)
+    a = desk.decide(p.proposal_id, "rev-agent", "approve", p.content_hash())
+    r = proposal(t, "change_plan", "HB-SUB-01", {"customer_id": t.customer_id, "new_plan": "Basic"}, n=6)
+    real_log = desk._log
+
+    def broken_log(kind, ref_id, actor, payload):
+        if kind == "superseded":
+            raise RuntimeError("audit unavailable")
+        return real_log(kind, ref_id, actor, payload)
+
+    desk._log = broken_log
+    with pytest.raises(RuntimeError, match="audit unavailable"):
+        desk.revise(p.proposal_id, "rev-agent", r)
+    assert desk.state(p.proposal_id) == "approved"
+    assert desk._proposal(r.proposal_id)[0] is None
+    assert desk.execute(a.approval_id).outcome == "succeeded"
+    assert len(backend.calls) == 1
+
+
 # ---- idempotency and retries ---------------------------------------------------------------
 
 def test_replaying_an_approval_does_not_execute_twice(world):
