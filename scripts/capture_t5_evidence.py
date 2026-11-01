@@ -1,7 +1,8 @@
-"""Capture README evidence: local FastAPI via HTTP + fixture via real CDP clicks (no URL state injection)."""
+"""Capture README evidence: CDP viewports (DPR 1), scroll-into-view, manifest with measured PNG headers."""
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -17,21 +18,31 @@ IMG = ROOT / "docs" / "images"
 MANIFEST = ROOT / "docs" / "images" / "opsdesk-t5-evidence-manifest.json"
 FIX = "http://127.0.0.1:8767/fixture-demo/"
 NODE = shutil.which("node") or "node"
+SCRIPT = ROOT / "scripts" / "capture_fixture_cdp.mjs"
 
+LOCAL_SCROLL_REVISE = """(() => {
+  for (const e of document.querySelectorAll('em')) {
+    if (e.textContent.includes('Approved but not run yet')) {
+      e.closest('div.card')?.scrollIntoView({ block: 'start', behavior: 'instant' });
+    }
+  }
+  for (const b of document.querySelectorAll('button')) {
+    if (b.textContent.includes('Save edit as new draft')) {
+      b.scrollIntoView({ block: 'center', behavior: 'instant' });
+    }
+    if (b.textContent.includes('Run mock action')) {
+      b.scrollIntoView({ block: 'center', behavior: 'instant' });
+    }
+  }
+})()"""
 
-def find_browser() -> list[str]:
-    for p in (
-        Path(r"C:\Program Files\Google\Chrome\Application\chrome.exe"),
-        Path(r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"),
-        Path(r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"),
-    ):
-        if p.is_file():
-            return [str(p)]
-    for name in ("msedge", "chrome", "google-chrome", "chromium"):
-        p = shutil.which(name)
-        if p:
-            return [p]
-    return []
+LOCAL_SCROLL_EXECUTIONS = """(() => {
+  const hits = [...document.querySelectorAll('p')].filter((p) =>
+    p.textContent.includes('Execution') && (p.textContent.includes('succeeded') || p.textContent.includes('duplicate_ignored'))
+  );
+  hits.forEach((p) => p.scrollIntoView({ block: 'center', behavior: 'instant' }));
+  if (hits.length) hits[hits.length - 1].scrollIntoView({ block: 'end', behavior: 'instant' });
+})()"""
 
 
 def post_local(base: str, path: str, data: dict | None = None) -> None:
@@ -50,30 +61,61 @@ def get_local(base: str, path: str) -> str:
     return urllib.request.urlopen(req, timeout=30).read().decode()
 
 
-def headless_shot(browser: list[str], url: str, out: Path, w: int, h: int) -> None:
-    out.parent.mkdir(parents=True, exist_ok=True)
-    cmd = browser + [
-        "--headless=new",
-        "--disable-gpu",
-        f"--window-size={w},{h}",
-        f"--screenshot={out}",
-        url,
-    ]
-    r = subprocess.run(cmd, capture_output=True, text=True)
-    if r.returncode != 0 or not out.is_file():
-        raise SystemExit(f"screenshot failed: {r.stderr or r.stdout}")
+def parse_meta(stdout: str) -> dict:
+    for line in stdout.splitlines():
+        if line.startswith("CAPTURE_META"):
+            return json.loads(line[len("CAPTURE_META") :])
+    raise SystemExit(f"CDP capture missing CAPTURE_META in:\n{stdout}")
 
 
-def fixture_clicks(url: str, out: Path, w: int, h: int, testids: list[str]) -> None:
-    script = ROOT / "scripts" / "capture_fixture_cdp.mjs"
-    cmd = [NODE, str(script), url, str(out), str(w), str(h), *testids]
-    r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
+def cdp_capture(
+    url: str,
+    out: Path,
+    css_w: int,
+    css_h: int,
+    clicks: list[str] | None = None,
+    scroll_selectors: list[str] | None = None,
+    scroll_js: str | None = None,
+) -> dict:
+    env = os.environ.copy()
+    if scroll_selectors:
+        env["CAPTURE_SCROLL"] = ",".join(scroll_selectors)
+    else:
+        env.pop("CAPTURE_SCROLL", None)
+    if scroll_js:
+        env["CAPTURE_SCROLL_JS"] = scroll_js
+    else:
+        env.pop("CAPTURE_SCROLL_JS", None)
+    cmd = [NODE, str(SCRIPT), url, str(out), str(css_w), str(css_h), *(clicks or [])]
+    r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, env=env)
     if r.returncode != 0:
-        raise SystemExit(r.stderr or r.stdout or "fixture CDP capture failed")
+        raise SystemExit(r.stderr or r.stdout or "CDP capture failed")
     print(r.stdout.strip())
+    return parse_meta(r.stdout)
 
 
-def prepare_local(base: str) -> tuple[str, str]:
+def entry(
+    rel: str,
+    interaction: str,
+    outcome_claim: str,
+    pixels_visible: str,
+    meta: dict,
+) -> dict:
+    return {
+        "file": rel.replace("\\", "/"),
+        "interaction": interaction,
+        "outcome_claim": outcome_claim,
+        "css_viewport_requested": meta["cssViewport"],
+        "inner_width": meta["innerWidth"],
+        "inner_height": meta["innerHeight"],
+        "device_pixel_ratio": meta["devicePixelRatio"],
+        "png_width": meta["pngWidth"],
+        "png_height": meta["pngHeight"],
+        "pixels_visible": pixels_visible,
+    }
+
+
+def prepare_local_approved(base: str) -> None:
     post_local(base, "/tickets/T-0044/draft")
     html = get_local(base, "/tickets/T-0044")
     pids = re.findall(r"action='/proposals/(P-[a-f0-9]+)/decide'", html)
@@ -82,13 +124,12 @@ def prepare_local(base: str) -> tuple[str, str]:
         raise SystemExit("local ticket page missing approve form")
     post_local(
         base,
-        f"/proposals/{pids[0]}/decide",
-        {"reviewer_id": "rev-agent-ada", "decision": "approve", "seen_hash": hashes[0], "reason": ""},
+        f"/proposals/{pids[-1]}/decide",
+        {"reviewer_id": "rev-agent-ada", "decision": "approve", "seen_hash": hashes[-1], "reason": ""},
     )
     html2 = get_local(base, "/tickets/T-0044")
     if "Approved but not run yet" not in html2:
         raise SystemExit("local approved-unexecuted state missing")
-    return pids[0], hashes[0]
 
 
 def prepare_local_executed(base: str) -> None:
@@ -101,12 +142,9 @@ def prepare_local_executed(base: str) -> None:
 
 
 def main() -> int:
-    browser = find_browser()
-    if not browser:
-        raise SystemExit("Chrome or Edge required for screenshots")
     port = 8772
     base = f"http://127.0.0.1:{port}"
-    manifest = []
+    manifest: list[dict] = []
     db = Path(tempfile.mkdtemp()) / "capture.sqlite"
     server = subprocess.Popen(
         [sys.executable, "-m", "opsdesk.app", "--port", str(port), "--db", str(db)],
@@ -134,78 +172,98 @@ def main() -> int:
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
-            time.sleep(0.4)
+            time.sleep(0.5)
 
-        prepare_local(base)
-        out_revise = IMG / "opsdesk-local-approved-revise.png"
-        headless_shot(browser, f"{base}/tickets/T-0044", out_revise, 920, 880)
+        prepare_local_approved(base)
+        m1 = cdp_capture(
+            f"{base}/tickets/T-0044",
+            IMG / "opsdesk-local-approved-revise.png",
+            920,
+            1050,
+            scroll_js=LOCAL_SCROLL_REVISE,
+        )
         manifest.append(
-            {
-                "file": str(out_revise.relative_to(ROOT)),
-                "viewport": "920x880",
-                "interaction": "HTTP draft + approve (approved-but-unexecuted)",
-                "outcome": "Save edit as new draft + approved banner visible",
-            }
+            entry(
+                "docs/images/opsdesk-local-approved-revise.png",
+                "Fresh in-memory desk: HTTP draft T-0044 + approve (CDP viewport, scroll revise controls)",
+                "Approved-but-unexecuted banner, Save edit as new draft, Run mock action",
+                "Banner, edit form fields, Save edit and Run mock action buttons legible on #f4f7fb",
+                m1,
+            )
         )
 
         prepare_local_executed(base)
-        out_replay = IMG / "opsdesk-local-receipt-replay.png"
-        headless_shot(browser, f"{base}/tickets/T-0044", out_replay, 920, 920)
+        m2 = cdp_capture(
+            f"{base}/tickets/T-0044",
+            IMG / "opsdesk-local-receipt-replay.png",
+            920,
+            1100,
+            scroll_js=LOCAL_SCROLL_EXECUTIONS,
+        )
         manifest.append(
-            {
-                "file": str(out_replay.relative_to(ROOT)),
-                "viewport": "920x920",
-                "interaction": "HTTP approve + execute twice",
-                "outcome": "One succeeded execution + duplicate_ignored in page",
-            }
+            entry(
+                "docs/images/opsdesk-local-receipt-replay.png",
+                "Same ticket: HTTP execute twice (same approval idempotency key)",
+                "Both succeeded and duplicate_ignored execution rows visible",
+                "Two Execution paragraphs with outcomes succeeded and duplicate_ignored and shared idempotency key",
+                m2,
+            )
         )
 
-        fixture_clicks(
+        clicks_full = ["approve-plus", "revise-basic", "approve-basic", "run-basic", "replay"]
+        m3 = cdp_capture(
             FIX,
             IMG / "opsdesk-fixture-simulation.png",
             960,
             980,
-            ["approve-plus", "revise-basic", "approve-basic", "run-basic", "replay"],
+            clicks_full,
+            scroll_selectors=[".receipt", ".duplicate-note"],
         )
         manifest.append(
-            {
-                "file": "docs/images/opsdesk-fixture-simulation.png",
-                "viewport": "960x980",
-                "interaction": "Clicks: approve-plus → revise-basic → approve-basic → run-basic → replay",
-                "outcome": "Basic receipt idempotency A-fixture-002 + duplicate ignored message",
-            }
+            entry(
+                "docs/images/opsdesk-fixture-simulation.png",
+                "Fixture clicks: " + " → ".join(clicks_full),
+                "Basic receipt idempotency A-fixture-002 + duplicate ignored note",
+                "Green receipt line with A-fixture-002 and amber duplicate-run ignored message",
+                m3,
+            )
         )
 
-        fixture_clicks(
+        m4 = cdp_capture(
             FIX,
             IMG / "opsdesk-fixture-simulation-mobile.png",
             390,
             844,
-            ["approve-plus", "revise-basic", "approve-basic", "run-basic", "replay"],
+            clicks_full,
+            scroll_selectors=[".receipt", ".duplicate-note"],
         )
         manifest.append(
-            {
-                "file": "docs/images/opsdesk-fixture-simulation-mobile.png",
-                "viewport": "390x844",
-                "interaction": "Same click path at phone width (520px CSS breakpoint active)",
-                "outcome": "Stacked layout with receipt visible",
-            }
+            entry(
+                "docs/images/opsdesk-fixture-simulation-mobile.png",
+                "Same click path at CSS 390×844 (Emulation DPR 1)",
+                "Stacked phone layout with receipt id and duplicate ignored text",
+                "Receipt idempotency=A-fixture-002 and duplicate ignored message in viewport after scroll",
+                m4,
+            )
         )
 
-        fixture_clicks(
+        clicks_stale = ["approve-plus", "revise-basic", "run-stale"]
+        m5 = cdp_capture(
             FIX,
             IMG / "opsdesk-fixture-stale-refusal-narrow.png",
             390,
             820,
-            ["approve-plus", "revise-basic", "run-stale"],
+            clicks_stale,
+            scroll_selectors=[".refusal", '[data-testid="approve-basic"]', '[data-testid="run-stale"]'],
         )
         manifest.append(
-            {
-                "file": "docs/images/opsdesk-fixture-stale-refusal-narrow.png",
-                "viewport": "390x820",
-                "interaction": "Clicks: approve-plus → revise-basic → run-stale",
-                "outcome": "Superseded approval refusal styling visible",
-            }
+            entry(
+                "docs/images/opsdesk-fixture-stale-refusal-narrow.png",
+                "Fixture clicks: " + " → ".join(clicks_stale),
+                "Superseded approval refusal + Approve for Basic control",
+                "Red refusal text for voided approval and Approve for Basic button visible",
+                m5,
+            )
         )
 
         MANIFEST.write_text(json.dumps(manifest, indent=2), encoding="utf-8")

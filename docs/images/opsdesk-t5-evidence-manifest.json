@@ -1,32 +1,62 @@
 [
   {
-    "file": "docs\\images\\opsdesk-local-approved-revise.png",
-    "viewport": "920x880",
-    "interaction": "HTTP draft + approve (approved-but-unexecuted)",
-    "outcome": "Save edit as new draft + approved banner visible"
+    "file": "docs/images/opsdesk-local-approved-revise.png",
+    "interaction": "Fresh in-memory desk: HTTP draft T-0044 + approve (CDP viewport, scroll revise controls)",
+    "outcome_claim": "Approved-but-unexecuted banner, Save edit as new draft, Run mock action",
+    "css_viewport_requested": "920x1050",
+    "inner_width": 920,
+    "inner_height": 1050,
+    "device_pixel_ratio": 1,
+    "png_width": 920,
+    "png_height": 1050,
+    "pixels_visible": "Banner, edit form fields, Save edit and Run mock action buttons legible on #f4f7fb"
   },
   {
-    "file": "docs\\images\\opsdesk-local-receipt-replay.png",
-    "viewport": "920x920",
-    "interaction": "HTTP approve + execute twice",
-    "outcome": "One succeeded execution + duplicate_ignored in page"
+    "file": "docs/images/opsdesk-local-receipt-replay.png",
+    "interaction": "Same ticket: HTTP execute twice (same approval idempotency key)",
+    "outcome_claim": "Both succeeded and duplicate_ignored execution rows visible",
+    "css_viewport_requested": "920x1100",
+    "inner_width": 920,
+    "inner_height": 1100,
+    "device_pixel_ratio": 1,
+    "png_width": 920,
+    "png_height": 1100,
+    "pixels_visible": "Two Execution paragraphs with outcomes succeeded and duplicate_ignored and shared idempotency key"
   },
   {
     "file": "docs/images/opsdesk-fixture-simulation.png",
-    "viewport": "960x980",
-    "interaction": "Clicks: approve-plus \u2192 revise-basic \u2192 approve-basic \u2192 run-basic \u2192 replay",
-    "outcome": "Basic receipt idempotency A-fixture-002 + duplicate ignored message"
+    "interaction": "Fixture clicks: approve-plus \u2192 revise-basic \u2192 approve-basic \u2192 run-basic \u2192 replay",
+    "outcome_claim": "Basic receipt idempotency A-fixture-002 + duplicate ignored note",
+    "css_viewport_requested": "960x980",
+    "inner_width": 960,
+    "inner_height": 980,
+    "device_pixel_ratio": 1,
+    "png_width": 960,
+    "png_height": 980,
+    "pixels_visible": "Green receipt line with A-fixture-002 and amber duplicate-run ignored message"
   },
   {
     "file": "docs/images/opsdesk-fixture-simulation-mobile.png",
-    "viewport": "390x844",
-    "interaction": "Same click path at phone width (520px CSS breakpoint active)",
-    "outcome": "Stacked layout with receipt visible"
+    "interaction": "Same click path at CSS 390\u00d7844 (Emulation DPR 1)",
+    "outcome_claim": "Stacked phone layout with receipt id and duplicate ignored text",
+    "css_viewport_requested": "390x844",
+    "inner_width": 390,
+    "inner_height": 844,
+    "device_pixel_ratio": 1,
+    "png_width": 390,
+    "png_height": 844,
+    "pixels_visible": "Receipt idempotency=A-fixture-002 and duplicate ignored message in viewport after scroll"
   },
   {
     "file": "docs/images/opsdesk-fixture-stale-refusal-narrow.png",
-    "viewport": "390x820",
-    "interaction": "Clicks: approve-plus \u2192 revise-basic \u2192 run-stale",
-    "outcome": "Superseded approval refusal styling visible"
+    "interaction": "Fixture clicks: approve-plus \u2192 revise-basic \u2192 run-stale",
+    "outcome_claim": "Superseded approval refusal + Approve for Basic control",
+    "css_viewport_requested": "390x820",
+    "inner_width": 390,
+    "inner_height": 820,
+    "device_pixel_ratio": 1,
+    "png_width": 390,
+    "png_height": 820,
+    "pixels_visible": "Red refusal text for voided approval and Approve for Basic button visible"
   }
 ]

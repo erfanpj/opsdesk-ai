@@ -338,16 +338,16 @@ baseline, and every action is a mock. `scripts/record_demo.py` makes it again (n
 
 ## Screenshots
 
-Taken 1 Nov 2026 (last-mile pass). The **local FastAPI app** uses real HTTP; the **fixture simulation** is captured by clicking real controls via CDP (`scripts/capture_t5_evidence.py`). Metadata: `docs/images/opsdesk-t5-evidence-manifest.json`.
+Taken 1 Nov 2026 (capture frames pass). Regenerate with `scripts/capture_t5_evidence.py` (CDP `Emulation.setDeviceMetricsOverride`, DPR 1, scroll-into-view). Measured PNG headers and pixel checks: `docs/images/opsdesk-t5-evidence-manifest.json`.
 
 | | |
 |---|---|
 | ![Fixture desktop — executed receipt](docs/images/opsdesk-fixture-simulation.png) | ![Fixture phone — same flow](docs/images/opsdesk-fixture-simulation-mobile.png) |
-| Desktop 960×980: approve → revise → approve Basic → run → duplicate ignored | Phone 390×844: stacked queue + receipt (`A-fixture-002`) |
+| PNG **960×980** (inner 960×980): receipt `A-fixture-002` + duplicate ignored | PNG **390×844** (inner 390×844): same outcomes after scroll |
 | ![Fixture — superseded approval refused](docs/images/opsdesk-fixture-stale-refusal-narrow.png) | ![Local — approved, edit allowed](docs/images/opsdesk-local-approved-revise.png) |
-| Phone 390×820: **Run superseded approval** after revise | Local 920×880: approved-but-unexecuted + **Save edit as new draft** |
+| PNG **390×820**: refusal + **Approve for Basic** | PNG **920×1050**: banner + **Save edit as new draft** + **Run mock action** |
 | ![Local — receipt and ignored replay](docs/images/opsdesk-local-receipt-replay.png) | |
-| Local 920×920: one mock run + **duplicate_ignored** on replay | |
+| PNG **920×1100**: **succeeded** and **duplicate_ignored** rows, same approval key | |
 | ![Ticket list](docs/images/opsdesk-ticket-list.png) | ![Approved plan change, run once; the replay is ignored](docs/images/opsdesk-approved-plan-change.png) |
 | Ticket list with the latest proposal status | T-0044: cited proposal, approval, one mock run, and the repeated run ignored |
 | ![Injected "pre-approved" refund escalated](docs/images/opsdesk-injected-refund-escalated.png) | ![Hash-chained audit log](docs/images/opsdesk-audit-log.png) |
